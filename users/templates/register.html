@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+</head>
+<body>
+    <h2>用户注册</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- 自动渲染表单字段 -->
+        <button type="submit">注册</button>
+    </form>
+    <p>已有账号？<a href="{% url 'login' %}">登录</a></p>
+</body>
+</html>
