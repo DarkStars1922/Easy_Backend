@@ -75,13 +75,13 @@
 - Django 4.x（根据需要可以自行选择版本）
 - SQLite 数据库（默认）
 
-## 安装与运行
+## 常用的安装/运行指令
 
 1. **克隆项目**
 
    ```bash
-   git clone <项目仓库链接>
-   cd <项目文件夹>
+   git clone https://github.com/zzysssigm/Openlab_Easy_Backend
+   cd <你的项目文件夹>
    ```
 
 2. **创建虚拟环境（可选）**
@@ -91,29 +91,24 @@
    source venv/bin/activate
    ```
 
-3. **安装依赖**
+3. **安装Django**
 
-   创建一个 `requirements.txt` 文件并添加以下内容：
-
-   ```
-   Django>=4.0
-   ```
-
-   然后运行：
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+   详见：https://docs.djangoproject.com/zh-hans/5.1/intro/install/
 
 4. **数据库迁移**
 
    运行以下命令来进行数据库迁移：
-
+   
+   创建迁移文件
+   ```bash
+   python manage.py makemigrations
+   ```
+   应用迁移到数据库
    ```bash
    python manage.py migrate
    ```
 
-5. **创建超级用户**
+6. **创建超级用户**
 
    运行以下命令创建一个超级用户，以便访问管理后台：
 
@@ -121,7 +116,7 @@
    python manage.py createsuperuser
    ```
 
-6. **运行开发服务器**
+7. **运行开发服务器**
 
    启动开发服务器：
 
