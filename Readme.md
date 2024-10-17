@@ -17,8 +17,7 @@
 ## 项目结构
 
 ```
-├── avatars
-│   └── 屏幕截图_2022-09-15_233242.png      # 储存用户头像图片的文件夹
+├── avatars                                  # 储存用户头像图片的文件夹
 ├── db.sqlite3                               # SQLite 数据库文件
 ├── manage.py                                 # Django 项目管理脚本
 ├── myproject                                 # 主项目文件夹
