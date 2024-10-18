@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>删除文章</title>
+</head>
+<body>
+    <h2>你确定要删除文章 "{{ article.title }}" 吗？</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">确认删除</button>
+    </form>
+    <a href="{% url 'user_home' %}">取消</a>
+</body>
+</html>
