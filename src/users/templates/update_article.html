@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>修改文章</title>
+</head>
+<body>
+    <h2>修改文章</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="title">文章标题:</label><br>
+        <input type="text" id="title" name="title" value="{{ article.title }}" required><br><br>
+        
+        <label for="content">文章内容:</label><br>
+        <textarea id="content" name="content" rows="10" cols="50" required>{{ article.content }}</textarea><br><br>
+
+        <button type="submit">保存修改</button>
+    </form>
+    <a href="{% url 'user_home' %}">返回主页</a>
+</body>
+</html>
