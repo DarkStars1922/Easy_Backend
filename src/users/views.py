@@ -39,10 +39,13 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
         try:
+            #查找是否存在符合的用户
             user = authenticate(username=username,password=password)
+            #登录已存在的用户
             login(request,user)
             return redirect('user_home')
         except:
+            #对于失败的查询，给出警告信息
             message = '用户名或密码错误'
     else:
         form = LoginForm()
@@ -51,7 +54,8 @@ def user_login(request):
 
 # 用户登出
 def user_logout(request):
-    request.session.flush()
+    #清除当前会话数据，达到登出效果
+    logout(request)
     return redirect('login')
 
 # 注销账户
