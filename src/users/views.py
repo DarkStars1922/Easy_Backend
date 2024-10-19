@@ -85,7 +85,7 @@ def create_article(request):
     #检查请求方法
     if request.method == "POST":
         #传入文章表单相关数据
-        article_form = ArticleCreatForm(request.POST)
+        article_form = ArticleCreateForm(request.POST)
         #验证文章表单是否合法
         if article_form.is_valid():
             #保存数据，回到主页
