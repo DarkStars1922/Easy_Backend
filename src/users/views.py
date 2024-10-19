@@ -16,11 +16,12 @@ def register(request):
         #form = RegisterForm(request.POST, request.FILES)
         # 验证表单数据是否有效
         if form.is_valid():
+            #检验两次输入密码是否一致
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
             if password1 != password2:
                 message = '输入的密码不一致，请重试'
-                return render(request, 'register.html', {'form': form})
+                return HttpResponse('输入的密码不一致，请重试')
             # 保存用户数据并创建用户实例
             user = form.save()
             # 自动登录新注册的用户
@@ -53,6 +54,7 @@ def user_login(request):
         except:
             #对于失败的查询，给出警告信息
             message = '用户名或密码错误'
+            return HttpResponse('用户名或密码错误')
     else:
         form = LoginForm()
     # return render(request, 'login.html', {'form': form})
@@ -68,8 +70,11 @@ def user_logout(request):
 # 注销账户
 @login_required
 def delete_account(request):
-
-    return redirect('login')
+    if request.method == 'POST':
+        user_id = request.session["user_id"]
+        user = CustomUser.object.get()
+        return redirect('login')
+    return HttpResponse("请求方法错误")
 
 # 创建文章
 @login_required
