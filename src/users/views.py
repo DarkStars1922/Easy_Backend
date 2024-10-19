@@ -17,11 +17,10 @@ def register(request):
         # 验证表单数据是否有效
         if form.is_valid():
             #检验两次输入密码是否一致
-            password1 = form.cleaned_data['password1']
+            password = form.cleaned_data['password']
             password2 = form.cleaned_data['password2']
-            if password1 != password2:
-                message = '输入的密码不一致，请重试'
-                return HttpResponse('输入的密码不一致，请重试')
+            if password != password2:
+                raise forms.ValidationError("两次密码输入不一致，请重试")
             # 保存用户数据并创建用户实例
             user = form.save()
             # 自动登录新注册的用户
@@ -70,9 +69,8 @@ def user_logout(request):
 # 注销账户
 @login_required
 def delete_account(request):
-        #得到用户id并获取用户
-        user_id = request.session.get["_auth_user_id"]
-        user = CustomUser.object.get(id=user_id)
+        #获取用户
+        user = request.user
         #删除账户
         user.delete()
         return redirect('login')
@@ -87,28 +85,41 @@ def create_article(request):
         #验证文章表单是否合法
         if article_form.is_valid():
             #保存数据，回到主页
-            article_form.save()
+            article = article_form.save(commit=False)
+            author_id = request.user.user_id
+            article.author = CustomUser.objects.get(user_id=author_id)
+            article.save()
             return redirect('user_home')
     return render(request, 'create_article.html')
 
 # 修改文章
 @login_required
 def update_article(request, article_id):
-    
+    article = Article.objects.get(article_id=article_id)
+    if request.method == "POST":
+        article_form = ArticleCreateForm(request.POST)
+        title = article_form.cleaned_data['title']
+        content = article_form.cleaned_data['content']
+        article.title = title
+        article.content = content
+        article.save()
+    else:
+        article_form = ArticleCreateForm()
     # return render(request, 'update_article.html', {'article': article})
-    return
+    return render(request,'update_article.html',{'article': article})
 
 # 删除文章
 @login_required
 def delete_article(request, article_id):
-    
+    article = Article.objects.get(article_id=article_id)
+    article.delete()
     return redirect('user_home')
 
 # 用户主页
 @login_required
 def user_home(request):
     
-
+    
     return render(request, 'user_home.html', {
         # 'user': ,
         # 'articles': ,
