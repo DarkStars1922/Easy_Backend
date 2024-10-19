@@ -51,7 +51,7 @@ def user_login(request):
 
 # 用户登出
 def user_logout(request):
-
+    request.session.flush()
     return redirect('login')
 
 # 注销账户
