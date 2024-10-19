@@ -70,14 +70,12 @@ def user_logout(request):
 # 注销账户
 @login_required
 def delete_account(request):
-    if request.method == 'POST':
         #得到用户id并获取用户
         user_id = request.session["user_id"]
         user = CustomUser.object.get(id=user_id)
         #删除账户
         user.delete()
         return redirect('login')
-    return HttpResponse("请求方法错误")
 
 # 创建文章
 @login_required
