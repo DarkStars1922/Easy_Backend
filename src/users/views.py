@@ -12,9 +12,15 @@ def register(request):
     # 检查请求方法是否为 POST
     if request.method == 'POST':
         # 创建表单实例，传入 POST 数据和文件
-        form = RegisterForm(request.POST, request.FILES)
+        form = RegisterForm(request.POST)
+        #form = RegisterForm(request.POST, request.FILES)
         # 验证表单数据是否有效
         if form.is_valid():
+            password1 = form.cleaned_data['password1']
+            password2 = form.cleaned_data['password2']
+            if password1 != password2:
+                message = '输入的密码不一致，请重试'
+                return render(request, 'register.html', {'form': form})
             # 保存用户数据并创建用户实例
             user = form.save()
             # 自动登录新注册的用户
@@ -57,6 +63,7 @@ def user_logout(request):
     #清除当前会话数据，达到登出效果
     logout(request)
     return redirect('login')
+
 
 # 注销账户
 @login_required
