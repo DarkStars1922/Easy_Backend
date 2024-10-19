@@ -86,8 +86,7 @@ def create_article(request):
         if article_form.is_valid():
             #保存数据，回到主页
             article = article_form.save(commit=False)
-            author_id = request.user.user_id
-            article.author = CustomUser.objects.get(user_id=author_id)
+            article.author = request.user
             article.save()
             return redirect('user_home')
     return render(request, 'create_article.html')
@@ -119,7 +118,7 @@ def delete_article(request, article_id):
 @login_required
 def user_home(request):
     
-    
+
     return render(request, 'user_home.html', {
         # 'user': ,
         # 'articles': ,
