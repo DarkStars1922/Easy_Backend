@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm,ArticleCreateForm
 from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -82,7 +82,15 @@ def delete_account(request):
 # 创建文章
 @login_required
 def create_article(request):
-    
+    #检查请求方法
+    if request.method == "POST":
+        #传入文章表单相关数据
+        article_form = ArticleCreatForm(request.POST)
+        #验证文章表单是否合法
+        if article_form.is_valid():
+            #保存数据，回到主页
+            article_form.save()
+            return redirect('user_home')
     return render(request, 'create_article.html')
 
 # 修改文章
