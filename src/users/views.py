@@ -17,9 +17,9 @@ def register(request):
         # 验证表单数据是否有效
         if form.is_valid():
             #检验两次输入密码是否一致
-            password = form.cleaned_data['password']
+            password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
-            if password != password2:
+            if password1 != password2:
                 raise forms.ValidationError("两次密码输入不一致，请重试")
             # 保存用户数据并创建用户实例
             user = form.save()
