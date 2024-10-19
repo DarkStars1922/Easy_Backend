@@ -72,7 +72,7 @@ def user_logout(request):
 def delete_account(request):
     if request.method == 'POST':
         user_id = request.session["user_id"]
-        user = CustomUser.object.get()
+        user = CustomUser.object.get(id=user_id)
         return redirect('login')
     return HttpResponse("请求方法错误")
 
