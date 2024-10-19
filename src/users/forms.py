@@ -7,7 +7,7 @@ CustomUser = get_user_model()
 class RegisterForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        field = ['username','password1','password2']
+        fields = ['username','password1','password2']
         # fields = ['username', 'password1', 'password2', 'avatar', 'bio']
 
 class LoginForm(forms.Form):
