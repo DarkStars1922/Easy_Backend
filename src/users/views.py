@@ -32,8 +32,22 @@ def register(request):
 # 用户登录
 def user_login(request):
     
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            #获取用户名和密码
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+        try:
+            user = authenticate(username=username,password=password)
+            login(request,user)
+            return redirect('user_home')
+        except:
+            message = '用户名或密码错误'
+    else:
+        form = LoginForm()
     # return render(request, 'login.html', {'form': form})
-    return
+    return render(request,'login.html',{'form':form})
 
 # 用户登出
 def user_logout(request):

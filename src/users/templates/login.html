@@ -6,6 +6,9 @@
 </head>
 <body>
     <h2>用户登录</h2>
+    {% if message %}
+        <div class='alert alert-warning'>{{message}}</div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}  <!-- 自动渲染表单字段 -->
