@@ -155,12 +155,13 @@ def article_list(request):
 @login_required
 def article_detail(request, article_id):
     # 取出相应文章
+    is_favorited = False
     user = request.user
     article = Article.objects.get(id = article_id)
     if Favorite.objects.filter(user=user,article=article):
-        favorited = True
+        is_favorited = True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
         'article': article ,
-        'is_favorited': favorited
+        'is_favorited': is_favorited
     })
