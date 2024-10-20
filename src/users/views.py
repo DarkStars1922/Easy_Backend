@@ -158,9 +158,9 @@ def article_detail(request, article_id):
     user = request.user
     article = Article.objects.get(id = article_id)
     if Favorite.objects.filter(user=user,article=article):
-        is_favorited = True
+        favorited = True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
         'article': article ,
-        'is_favorited': is_favorited
+        'is_favorited': favorited
     })
