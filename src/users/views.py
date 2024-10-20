@@ -94,7 +94,7 @@ def create_article(request):
 @login_required
 def update_article(request, article_id):
     article = Article.objects.get(id=article_id)
-    if request.user != article.user:
+    if request.user != article.author:
         return HttpResponse("您无权编辑该文章")
     if request.method == "POST":
         title = request.POST['title']
@@ -157,7 +157,7 @@ def article_detail(request, article_id):
     # 取出相应文章
     user = request.user
     article = Article.objects.get(id = article_id)
-    if Favorite.objects.get(user=user,article=article):
+    if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
