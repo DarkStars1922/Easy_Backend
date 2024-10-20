@@ -166,7 +166,7 @@ def article_list(request):
     # 取出所有文章
     article_list = Article.objects.all()
     paginator = Paginator(article_list,4)
-    page = request.GET,get('page')
+    page = request.GET.get('page')
     page_obj = paginator.get_page(page)
     return render(request, 'article_list.html', {'page_obj': page_obj})
 
