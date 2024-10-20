@@ -109,15 +109,20 @@ def update_article(request, article_id):
 # 删除文章
 @login_required
 def delete_article(request, article_id):
+    # 数据库获取目标文章
     article = Article.objects.get(id=article_id)
-    article.delete()
-    return redirect('user_home')
+    # 删除文章
+    if request.method == 'POST':
+        article.delete()
+        return redirect('user_home')
+    return render(request,'delete_article.html',('article':article))
 
 # 用户主页
 @login_required
 def user_home(request):
-    
+    # 获取用户
     user = request.user
+    # 获取用户文章
     articles = Article.objects.filter(author=user)
     return render(request, 'user_home.html', {
         'user': user,
