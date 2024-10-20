@@ -90,15 +90,15 @@ def create_article(request):
             article.save()
             return redirect('user_home')
     return render(request, 'create_article.html')
-
+ 
 # 修改文章
 @login_required
 def update_article(request, article_id):
     article = Article.objects.get(id=article_id)
     if request.method == "POST":
         article_form = ArticleCreateForm(request.POST)
-        title = article_form.cleaned_data['title']
-        content = article_form.cleaned_data['content']
+        title = article_form.cleaned_data.get('title')
+        content = article_form.cleaned_data.get('content')
         article.title = title
         article.content = content
         article.save()
@@ -118,7 +118,7 @@ def delete_article(request, article_id):
 @login_required
 def user_home(request):
     
-    user = requeset.user
+    user = request.user
     articles = Article.objects.filter(author=user)
     return render(request, 'user_home.html', {
         'user': user,
