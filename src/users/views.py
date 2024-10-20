@@ -35,7 +35,7 @@ def register(request):
             # 保存用户数据并创建用户实例
             user = form.save()
             # 重定向到用户主页，其中'user_home'对应urls.py中的path('home/', views.user_home, name='user_home'),可以根据需要修改重定向的 URL
-            response =  redirect('/home/')
+            response =  redirect('user_home')
             response.set_cookie('username',username,300,path = '/')
             return response
     else:
@@ -58,7 +58,7 @@ def user_login(request):
             #查找是否存在符合的用户
             user = authenticate(username=username,password=password)
             #登录已存在的用户
-            response =  redirect('/home/')
+            response =  redirect('user_home')
             response.set_cookie('username',username,300,path = '/')
             return response
         except:
