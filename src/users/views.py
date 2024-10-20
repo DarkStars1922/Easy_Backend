@@ -143,7 +143,11 @@ def favorite_article(request, article_id):
             article = article
         )
         favorite.save()
-    return redirect('article_detail')
+        is_favorited = True
+    return render(request,'article_detail.html',{
+        'article': article ,
+        'is_favorited': is_favorited
+    })
 
 # 文章列表视图
 def article_list(request):
