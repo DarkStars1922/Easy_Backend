@@ -17,7 +17,7 @@ def register(request):
         # 验证表单数据是否有效
         if form.is_valid():
             username = form.cleaned_data['username']
-            if CustomUser.objects.filter(username=username)
+            if CustomUser.objects.filter(username=username):
                 return forms.ValidationError("当前用户名已被注册")
             #检验两次输入密码是否一致
             password1 = form.cleaned_data['password1']
