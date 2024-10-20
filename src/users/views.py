@@ -142,7 +142,7 @@ def favorite_article(request, article_id):
         favorite.user = user
         favorite.article = article
         favorite.save()
-    return redirect('user_home')
+    return redirect('article_detail')
 
 # 文章列表视图
 def article_list(request):
@@ -154,6 +154,8 @@ def article_list(request):
 # 文章详情视图
 @login_required
 def article_detail(request, article_id):
+    if request.method == "POST":
+        favorite_article(request,article_id)
     # 取出相应文章
     is_favorited = False
     user = request.user
