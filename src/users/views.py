@@ -60,6 +60,7 @@ def user_login(request):
             #登录已存在的用户
             response =  redirect('/home/')
             response.set_cookie('username',username,300,path = '/')
+            return response
         except:
             #对于失败的查询，给出警告信息
             return forms.ValidationError('用户名或密码错误')
