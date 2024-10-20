@@ -35,8 +35,9 @@ def register(request):
             # 保存用户数据并创建用户实例
             user = form.save()
             # 重定向到用户主页，其中'user_home'对应urls.py中的path('home/', views.user_home, name='user_home'),可以根据需要修改重定向的 URL
-            response =  redirect('user_home')
+            response =  redirect('/home/')
             response.set_cookie('username',username,300,path = '/')
+            return response
     else:
         # 如果不是 POST 请求，则创建一个空的表单实例
         form = RegisterForm()
@@ -57,7 +58,7 @@ def user_login(request):
             #查找是否存在符合的用户
             user = authenticate(username=username,password=password)
             #登录已存在的用户
-            response =  redirect('user_home')
+            response =  redirect('/home/')
             response.set_cookie('username',username,300,path = '/')
         except:
             #对于失败的查询，给出警告信息
@@ -131,6 +132,7 @@ def delete_article(request, article_id):
 #@login_required
 def user_home(request):
     # 获取用户
+    # if request.method == "POST":
     user = getuser(request)
     # 获取用户文章
     articles = Article.objects.filter(author=user)
