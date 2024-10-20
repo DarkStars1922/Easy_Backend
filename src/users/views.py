@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 
 # 获取用户
-def user_get(request):
+def get_user(request):
     username = request.COOKIES['username']
     if not username:
         return redirect('login')
