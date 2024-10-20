@@ -19,7 +19,3 @@ class ArticleCreateForm(forms.ModelForm):
         model = Article
         fields = ['title','content']
         
-class FavoriteForm(forms.ModelForm):
-    class Meta:
-        model = Favorite
-        fields = ['user','article']

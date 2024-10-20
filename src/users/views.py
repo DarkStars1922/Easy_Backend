@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ArticleCreateForm, FavoriteForm
+from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -138,9 +138,10 @@ def favorite_article(request, article_id):
     if request.method == "POST":
         user = request.user
         article = Article.objects.get(id=article_id)
-        favorite = FavoriteForm()
-        favorite.user = user
-        favorite.article = article
+        favorite = Favorite.objects.creat(
+            user = user,
+            article = article
+        )
         favorite.save()
     return redirect('article_detail')
 
