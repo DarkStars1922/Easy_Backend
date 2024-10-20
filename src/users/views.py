@@ -74,7 +74,7 @@ def delete_account(request):
         #删除账户
         user.delete()
         return redirect('login')
-
+    
 # 创建文章
 @login_required
 def create_article(request):
@@ -94,7 +94,7 @@ def create_article(request):
 # 修改文章
 @login_required
 def update_article(request, article_id):
-    article = Article.objects.get(article_id=article_id)
+    article = Article.objects.get(id=article_id)
     if request.method == "POST":
         article_form = ArticleCreateForm(request.POST)
         title = article_form.cleaned_data['title']
@@ -110,7 +110,7 @@ def update_article(request, article_id):
 # 删除文章
 @login_required
 def delete_article(request, article_id):
-    article = Article.objects.get(article_id=article_id)
+    article = Article.objects.get(id=article_id)
     article.delete()
     return redirect('user_home')
 
@@ -118,10 +118,11 @@ def delete_article(request, article_id):
 @login_required
 def user_home(request):
     
-
+    user = requeset.user
+    articles = Article.objects.filter(author=user)
     return render(request, 'user_home.html', {
-        # 'user': ,
-        # 'articles': ,
+        'user': user,
+        'articles': articles
         # 'favorite_articles': 
     })
 
@@ -133,15 +134,18 @@ def favorite_article(request, article_id):
 
 # 文章列表视图
 def article_list(request):
-
+    # 取出所有文章
+    articles = Article.objects.all()
     # return render(request, 'article_list.html', {'page_obj': page_obj})
     return
 
 # 文章详情视图
 @login_required
 def article_detail(request, article_id):
-
+    # 取出相应文章
+    article = Article.objects.get(id = article_id)
+    # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
-        # 'article': ,
+        'article': article
         # 'is_favorited': 
     })
