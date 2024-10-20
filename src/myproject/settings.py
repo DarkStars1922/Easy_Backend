@@ -125,3 +125,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 设置指向
 AUTH_USER_MODEL = 'users.CustomUser'
+
+# 邮箱认证功能 
+EMAIL_HOST = "smtp.qq.com"  
+
+EMAIL_PORT = 25  
+
+EMAIL_HOST_USER = "the_red_omega@qq.com"  
+
+EMAIL_HOST_PASSWORD = "lwdknhkejoqxheaf"  
+
+EMAIL_USE_TLS = True  
+
+EMAIL_FROM = "DarkStars" 
