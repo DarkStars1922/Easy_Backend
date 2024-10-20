@@ -138,7 +138,7 @@ def favorite_article(request, article_id):
     if request.method == "POST":
         user = request.user
         article = Article.objects.get(id=article_id)
-        favorite = Favorite.objects.creat(
+        favorite = Favorite.objects.create(
             user = user,
             article = article
         )
