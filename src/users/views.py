@@ -96,9 +96,8 @@ def create_article(request):
 def update_article(request, article_id):
     article = Article.objects.get(id=article_id)
     if request.method == "POST":
-        article_form = ArticleCreateForm(request.POST)
-        title = article_form.get('title')
-        content = article_form.get('content')
+        title = request.POST['title']
+        content = request.POST['content']
         article.title = title
         article.content = content
         article.save()

@@ -34,3 +34,6 @@
 # Folder
 venv/
 __pycache__/
+
+# File
+db.sqlite3
