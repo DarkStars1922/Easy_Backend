@@ -16,6 +16,9 @@ def register(request):
         #form = RegisterForm(request.POST, request.FILES)
         # 验证表单数据是否有效
         if form.is_valid():
+            username = form.cleaned_data['username']
+            if CustomUser.objects.filter(username=username)
+                return forms.ValidationError("当前用户名已被注册")
             #检验两次输入密码是否一致
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
@@ -51,8 +54,7 @@ def user_login(request):
             return redirect('user_home')
         except:
             #对于失败的查询，给出警告信息
-            message = '用户名或密码错误'
-            return HttpResponse('用户名或密码错误')
+            return forms.ValidationError('用户名或密码错误')
     else:
         form = LoginForm()
     # return render(request, 'login.html', {'form': form})
