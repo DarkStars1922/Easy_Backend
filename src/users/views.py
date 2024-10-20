@@ -37,7 +37,6 @@ def register(request):
 
 # 用户登录
 def user_login(request):
-    
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -95,6 +94,8 @@ def create_article(request):
 @login_required
 def update_article(request, article_id):
     article = Article.objects.get(id=article_id)
+    if request.user != article.user:
+        return HttpResponse("您无权编辑该文章")
     if request.method == "POST":
         title = request.POST['title']
         content = request.POST['content']
@@ -117,23 +118,30 @@ def delete_article(request, article_id):
         return redirect('user_home')
     return render(request,'delete_article.html',{'article':article})
 
-# 用户主页
+# 用户主页 
 @login_required
 def user_home(request):
     # 获取用户
     user = request.user
     # 获取用户文章
     articles = Article.objects.filter(author=user)
+    favorite_articles = Favorite.objects.filter(user=user) 
     return render(request, 'user_home.html', {
         'user': user,
-        'articles': articles
-        # 'favorite_articles': 
+        'articles': articles,
+        'favorite_articles': favorite_articles 
     })
 
 # 收藏文章
 @login_required
 def favorite_article(request, article_id):
-    
+    if request.method == "POST":
+        user = request.user
+        article = Article.objects.get(id=article_id)
+        favorite = FavoriteForm()
+        favorite.user = user
+        favorite.article = article
+        favorite.save()
     return redirect('user_home')
 
 # 文章列表视图
@@ -147,9 +155,12 @@ def article_list(request):
 @login_required
 def article_detail(request, article_id):
     # 取出相应文章
+    user = request.user
     article = Article.objects.get(id = article_id)
+    if Favorite.objects.get(user=user,article=article):
+        is_favorited = True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
-        'article': article
-        # 'is_favorited': 
+        'article': article ,
+        'is_favorited': is_favorited
     })

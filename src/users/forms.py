@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Article
+from .models import Article,Favorite
 CustomUser = get_user_model()
 
 class RegisterForm(UserCreationForm):
@@ -18,3 +18,8 @@ class ArticleCreateForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['title','content']
+        
+class FavoriteForm(forms.Form):
+    class Meta:
+        model = Favorite
+        fields = ['user','article']
