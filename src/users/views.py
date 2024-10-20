@@ -130,10 +130,9 @@ def delete_article(request, article_id):
     return render(request,'delete_article.html',{'article':article})
 
 # 用户主页 
-#@login_required
+@login_required
 def user_home(request):
     # 获取用户
-    # if request.method == "POST":
     user = getuser(request)
     # 获取用户文章
     articles = Article.objects.filter(author=user)
@@ -167,7 +166,10 @@ def article_list(request):
     article_list = Article.objects.all()
     paginator = Paginator(article_list,4)
     page = request.GET.get('page')
-    page_obj = paginator.get_page(page)
+    try:
+        page_obj = paginator.get_page(page)
+    except:
+        page_obj = paginator.get_page(1)
     return render(request, 'article_list.html', {'page_obj': page_obj})
 
 # 文章详情视图
