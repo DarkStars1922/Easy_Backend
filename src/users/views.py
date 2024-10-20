@@ -115,7 +115,7 @@ def delete_article(request, article_id):
     if request.method == 'POST':
         article.delete()
         return redirect('user_home')
-    return render(request,'delete_article.html',('article':article))
+    return render(request,'delete_article.html',{'article':article})
 
 # 用户主页
 @login_required
