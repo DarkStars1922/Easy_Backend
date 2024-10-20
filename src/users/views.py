@@ -36,7 +36,7 @@ def register(request):
             user = form.save()
             # 重定向到用户主页，其中'user_home'对应urls.py中的path('home/', views.user_home, name='user_home'),可以根据需要修改重定向的 URL
             response =  redirect('user_home')
-            response.set_cookie('username',username,300)
+            response.set_cookie('username',username,300，path = '/')
     else:
         # 如果不是 POST 请求，则创建一个空的表单实例
         form = RegisterForm()
@@ -58,7 +58,7 @@ def user_login(request):
             user = authenticate(username=username,password=password)
             #登录已存在的用户
             response =  redirect('user_home')
-            response.set_cookie('username',username,300)
+            response.set_cookie('username',username,300，path = '/')
         except:
             #对于失败的查询，给出警告信息
             return forms.ValidationError('用户名或密码错误')
