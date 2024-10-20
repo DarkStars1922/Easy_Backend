@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm,ArticleCreateForm
+from .forms import RegisterForm, LoginForm, ArticleCreateForm, FavoriteForm
 from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
