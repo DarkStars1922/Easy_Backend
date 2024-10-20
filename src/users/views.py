@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 
 # 获取用户
-def get_user(request):
+def getuser(request):
     username = request.COOKIES['username']
     if not username:
         return redirect('login')
@@ -78,7 +78,7 @@ def user_logout(request):
 @login_required
 def delete_account(request):
         #获取用户
-        user = get_user(request)
+        user = getuser(request)
         #删除账户
         user.delete()
         return redirect('login')
@@ -131,7 +131,7 @@ def delete_article(request, article_id):
 #@login_required
 def user_home(request):
     # 获取用户
-    user = get_user(request)
+    user = getuser(request)
     # 获取用户文章
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
