@@ -164,9 +164,9 @@ def favorite_article(request, article_id):
 # 文章列表视图
 def article_list(request):
     # 取出所有文章
-    articles = Article.objects.all()
-    # return render(request, 'article_list.html', {'page_obj': page_obj})
-    return
+    article_list = Article.objects.all()
+    page_obj = Paginator(article_list,4)
+    return render(request, 'article_list.html', {'page_obj': page_obj})
 
 # 文章详情视图
 @login_required
