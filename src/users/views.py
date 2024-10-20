@@ -7,6 +7,14 @@ from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 
+# 获取用户
+def user_get(request):
+    username = request.COOKIES['username']
+    if not username:
+        return redirect('login')
+    user = CustomUser.objects.get(username = username)
+    return user
+
 # 用户注册
 def register(request):
     # 检查请求方法是否为 POST
@@ -26,10 +34,9 @@ def register(request):
                 raise forms.ValidationError("两次密码输入不一致，请重试")
             # 保存用户数据并创建用户实例
             user = form.save()
-            # 自动登录新注册的用户
-            login(request, user)
             # 重定向到用户主页，其中'user_home'对应urls.py中的path('home/', views.user_home, name='user_home'),可以根据需要修改重定向的 URL
-            return redirect('user_home')
+            response =  redirect('user_home')
+            response.set_cookie('username',username,300)
     else:
         # 如果不是 POST 请求，则创建一个空的表单实例
         form = RegisterForm()
@@ -50,8 +57,8 @@ def user_login(request):
             #查找是否存在符合的用户
             user = authenticate(username=username,password=password)
             #登录已存在的用户
-            login(request,user)
-            return redirect('user_home')
+            response =  redirect('user_home')
+            response.set_cookie('username',username,300)
         except:
             #对于失败的查询，给出警告信息
             return forms.ValidationError('用户名或密码错误')
@@ -63,15 +70,15 @@ def user_login(request):
 # 用户登出
 def user_logout(request):
     #清除当前会话数据，达到登出效果
-    logout(request)
-    return redirect('login')
-
+    response = redirect('login')
+    response.delete_cookie('username')
+    return response
 
 # 注销账户
 @login_required
 def delete_account(request):
         #获取用户
-        user = request.user
+        user = get_user(request)
         #删除账户
         user.delete()
         return redirect('login')
@@ -121,10 +128,10 @@ def delete_article(request, article_id):
     return render(request,'delete_article.html',{'article':article})
 
 # 用户主页 
-@login_required
+#@login_required
 def user_home(request):
     # 获取用户
-    user = request.user
+    user = get_user(request)
     # 获取用户文章
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
