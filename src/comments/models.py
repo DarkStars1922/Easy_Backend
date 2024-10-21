@@ -12,4 +12,4 @@ class Comment(models.Model):
         ordering = ('-created_at',)
         
     def __str__(self):
-        return self.content[:15] 
+        return self.content 
