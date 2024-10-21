@@ -8,17 +8,14 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 
-# 获取用户
+# 检查登录情况
 def getuser(request):
-    # 获取Cookie
+    # 尝试获取Cookie
     try:
         username = request.COOKIES['username']
     # 未登录则跳转至主页
     except:
         return redirect('login')
-    # 获取用户对象
-    user = CustomUser.objects.get(username = username)
-    return user
 
 # 用户注册
 def register(request):
@@ -82,10 +79,11 @@ def user_logout(request):
     return response
 
 # 注销账户
-@login_required
+#@login_required
 def delete_account(request):
         #获取用户
-        user = getuser(request)
+        getuser(request)
+        user = request.user
         #删除账户
         user.delete()
         return redirect('login')
@@ -143,7 +141,8 @@ def delete_article(request, article_id):
 #@login_required
 def user_home(request):
     # 获取用户
-    user = getuser(request)
+    getuser(request)
+    user = request.user
     # 获取用户文章和收藏夹
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
@@ -190,8 +189,9 @@ def article_list(request):
     return render(request, 'article_list.html', {'page_obj': page_obj})
 
 # 文章详情视图
-@login_required
+#@login_required
 def article_detail(request, article_id):
+    getuser(request)
     if request.method == "POST":
         # 启用文章收藏
         favorite_article(request,article_id)
