@@ -18,7 +18,52 @@
             <button type="submit">收藏</button>  <!-- 未收藏时显示收藏按钮 -->
         {% endif %}
     </form>
-
+    <hr>
+    {%if user.is_authenticated %}
+        <div>
+            <form
+                action="{% url 'comments:post_comment' article.id %}"
+                method = "POST"
+            >
+            {%csrf_token%}
+                <div class="form_group">
+                    <label for="content">
+                        发表评论:
+                    </label>
+                    <textarea
+                        type = "text"
+                        class = "form_control"
+                        id = "content"
+                        name = "content"
+                        rows = "4"></textarea>
+                </div>
+                <!--用于提交的按钮-->
+                <button type="submit">发送</button>
+            </form>
+        </div>
+        <br>
+    {%else%}
+        <!--未登录则需登录后使用评价功能-->>
+        <br>
+        <h5 class="row justify-content-center">
+            请<a href="{%url 'users:login'%}">登录</a>后回复
+        </h5>
+        <br>
+    {%endif%}
+    
+    <!--评论展示-->
+    <h4>共有{{comments.count}}条评论</h4>
+    <div>
+        {%for comment in comments%}
+            <hr>
+            <p>
+                {{comment.user}}
+                <br>
+                {{comment.created_at}}时发表：
+            </p>
+            <pre>{{comment.content}}</pre>
+        {% endfor %}
+        </div>
     <br>
     <a href="{% url 'article_list' %}">返回文章列表</a>
     <br>

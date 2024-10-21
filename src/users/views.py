@@ -7,6 +7,7 @@ from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
+from comments.models import Comment
 
 # 用户注册
 def register(request):
@@ -42,6 +43,9 @@ def register(request):
 # 用户登录
 def user_login(request):
     if request.method == 'POST':
+        # 防止重复登录
+        if request.COOKIES.get('username'):
+            return redirect("user_home")
         form = LoginForm(request.POST)
         if form.is_valid():
             #获取用户名和密码
@@ -59,7 +63,6 @@ def user_login(request):
             return forms.ValidationError('用户名或密码错误')
     else:
         form = LoginForm()
-    # return render(request, 'login.html', {'form': form})
     return render(request,'login.html',{'form':form})
 
 # 用户登出
@@ -101,7 +104,7 @@ def create_article(request):
 @login_required
 def update_article(request, article_id):
     # 获取待修改文章
-    article = Article.objects.get(id=article_id)
+    article = get_object_or_404(Article,id=article_id)
     # 判断修改用户是否为作者
     if request.user != article.author:
         return HttpResponse("您无权编辑该文章")
@@ -122,7 +125,7 @@ def update_article(request, article_id):
 @login_required
 def delete_article(request, article_id):
     # 数据库获取目标文章
-    article = Article.objects.get(id=article_id)
+    article = get_object_or_404(Article,id=article_id)
     if request.method == 'POST':
         # 删除文章
         article.delete()
@@ -154,7 +157,7 @@ def favorite_article(request, article_id):
     if request.method == "POST":
         # 获取收藏用户和文章
         user = request.user
-        article = Article.objects.get(id=article_id)
+        article = get_object_or_404(Article,id=article_id)
         # 创造收藏对象
         favorite = Favorite.objects.create(
             user = user,
@@ -197,12 +200,14 @@ def article_detail(request, article_id):
     # 取出相应文章
     is_favorited = False
     user = request.user
-    article = Article.objects.get(id = article_id)
+    article = get_object_or_404(Article,id = article_id)
+    comments = Comment.objects.filter(article=article)
     # 判断是否已被当前用户收藏
     if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
         'article': article ,
-        'is_favorited': is_favorited
+        'is_favorited': is_favorited ,
+        'comments': comments
     })
