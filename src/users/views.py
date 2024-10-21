@@ -8,14 +8,6 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 
-# 检查登录情况
-def getuser(request):
-    # 尝试获取Cookie
-    username = request.COOKIES.get('username')
-    # 未登录则跳转至登录界面
-    if not username:
-        return redirect('login')
-
 # 用户注册
 def register(request):
     # 检查请求方法是否为 POST
