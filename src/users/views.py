@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 def getuser(request):
     # 尝试获取Cookie
     username = request.COOKIES.get('username')
-    # 未登录则跳转至主页
+    # 未登录则跳转至登录界面
     if not username:
         return redirect('login')
 
@@ -80,8 +80,11 @@ def user_logout(request):
 # 注销账户
 #@login_required
 def delete_account(request):
-        #获取用户
-        getuser(request)
+        # 尝试获取Cookie
+        username = request.COOKIES.get('username')
+        # 未登录则跳转至登录界面
+        if not username:
+            return redirect('login')
         user = request.user
         #删除账户
         user.delete()
@@ -139,8 +142,12 @@ def delete_article(request, article_id):
 # 用户主页 
 #@login_required
 def user_home(request):
+    # 尝试获取Cookie
+    username = request.COOKIES.get('username')
+    # 未登录则跳转至登录界面
+    if not username:
+        return redirect('login')
     # 获取用户
-    getuser(request)
     user = request.user
     # 获取用户文章和收藏夹
     articles = Article.objects.filter(author=user)
@@ -190,7 +197,11 @@ def article_list(request):
 # 文章详情视图
 #@login_required
 def article_detail(request, article_id):
-    getuser(request)
+    # 尝试获取Cookie
+    username = request.COOKIES.get('username')
+    # 未登录则跳转至登录界面
+    if not username:
+        return redirect('login')
     if request.method == "POST":
         # 启用文章收藏
         favorite_article(request,article_id)
