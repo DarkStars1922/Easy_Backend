@@ -78,7 +78,6 @@ def user_logout(request):
     return response
 
 # 注销账户
-#@login_required
 def delete_account(request):
         # 尝试获取Cookie
         username = request.COOKIES.get('username')
@@ -140,7 +139,6 @@ def delete_article(request, article_id):
     return render(request,'delete_article.html',{'article':article})
 
 # 用户主页 
-#@login_required
 def user_home(request):
     # 尝试获取Cookie
     username = request.COOKIES.get('username')
@@ -195,7 +193,6 @@ def article_list(request):
     return render(request, 'article_list.html', {'page_obj': page_obj})
 
 # 文章详情视图
-#@login_required
 def article_detail(request, article_id):
     # 尝试获取Cookie
     username = request.COOKIES.get('username')
