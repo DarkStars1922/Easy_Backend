@@ -11,9 +11,10 @@ from django.core.mail import send_mail
 # 获取用户
 def getuser(request):
     # 获取Cookie
-    username = request.COOKIES['username']
+    try:
+        username = request.COOKIES['username']
     # 未登录则跳转至主页
-    if not username:
+    except:
         return redirect('login')
     # 获取用户对象
     user = CustomUser.objects.get(username = username)
