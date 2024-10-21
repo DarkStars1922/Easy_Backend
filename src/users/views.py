@@ -6,12 +6,16 @@ from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 
 # 获取用户
 def getuser(request):
+    # 获取Cookie
     username = request.COOKIES['username']
+    # 未登录则跳转至主页
     if not username:
         return redirect('login')
+    # 获取用户对象
     user = CustomUser.objects.get(username = username)
     return user
 
@@ -71,7 +75,7 @@ def user_login(request):
 
 # 用户登出
 def user_logout(request):
-    #清除当前会话数据，达到登出效果
+    #清除当前Cookie，达到登出效果
     response = redirect('login')
     response.delete_cookie('username')
     return response
@@ -104,18 +108,22 @@ def create_article(request):
 # 修改文章
 @login_required
 def update_article(request, article_id):
+    # 获取待修改文章
     article = Article.objects.get(id=article_id)
+    # 判断修改用户是否为作者
     if request.user != article.author:
         return HttpResponse("您无权编辑该文章")
     if request.method == "POST":
+        # 获取修改信息
         title = request.POST['title']
         content = request.POST['content']
+        # 进行修改
         article.title = title
         article.content = content
+        # 保存修改后文章
         article.save()
     else:
         article_form = ArticleCreateForm()
-    # return render(request, 'update_article.html', {'article': article})
     return render(request,'update_article.html',{'article': article})
 
 # 删除文章
@@ -123,18 +131,19 @@ def update_article(request, article_id):
 def delete_article(request, article_id):
     # 数据库获取目标文章
     article = Article.objects.get(id=article_id)
-    # 删除文章
     if request.method == 'POST':
+        # 删除文章
         article.delete()
+        # 返回主页
         return redirect('user_home')
     return render(request,'delete_article.html',{'article':article})
 
 # 用户主页 
-@login_required
+#@login_required
 def user_home(request):
     # 获取用户
     user = getuser(request)
-    # 获取用户文章
+    # 获取用户文章和收藏夹
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
     return render(request, 'user_home.html', {
@@ -147,13 +156,16 @@ def user_home(request):
 @login_required
 def favorite_article(request, article_id):
     if request.method == "POST":
+        # 获取收藏用户和文章
         user = request.user
         article = Article.objects.get(id=article_id)
+        # 创造收藏对象
         favorite = Favorite.objects.create(
             user = user,
             article = article
         )
         favorite.save()
+        # 返回收藏结果
         is_favorited = True
     return render(request,'article_detail.html',{
         'article': article ,
@@ -164,11 +176,15 @@ def favorite_article(request, article_id):
 def article_list(request):
     # 取出所有文章
     article_list = Article.objects.all()
+    # 进行分页操作
     paginator = Paginator(article_list,4)
+    # 提取每一页
     page = request.GET.get('page')
     try:
+        # 获取当前页面
         page_obj = paginator.get_page(page)
     except:
+        #若初始为空，主动跳转到第一页
         page_obj = paginator.get_page(1)
     return render(request, 'article_list.html', {'page_obj': page_obj})
 
@@ -176,11 +192,13 @@ def article_list(request):
 @login_required
 def article_detail(request, article_id):
     if request.method == "POST":
+        # 启用文章收藏
         favorite_article(request,article_id)
     # 取出相应文章
     is_favorited = False
     user = request.user
     article = Article.objects.get(id = article_id)
+    # 判断是否已被当前用户收藏
     if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
     # 传递对象并渲染页面
