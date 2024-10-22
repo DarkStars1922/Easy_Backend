@@ -7,6 +7,28 @@
 <body>
     <h1>文章列表</h1>
 
+    <div class='row'>
+        <form class='form-inline'>
+            <label>搜索：</label>
+            <input type = 'text'
+                class = 'form-control'
+                name = 'search'
+                placeholder='在这里搜索...'
+                required
+            >
+        </form>
+    </div>
+
+    {% if search %}
+        {% if page_obj %}
+            <h4>"{{ search }}"</span>的搜索结果如下：</h4>
+            <hr>        
+        {% else %}
+            <h4>暂无"{{ search }}"</span>相关的文章。</h4>
+            <hr>
+        {% endif %}
+    {% endif %}
+
     <!-- 显示文章列表 -->
     <ul>
         {% for article in page_obj.object_list %}

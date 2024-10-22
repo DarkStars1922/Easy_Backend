@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User,AbstractUser
+from django.urls import reverse
 
 # models中保存的是“类”，换言之这是一个对类型的定义
 
@@ -32,6 +33,9 @@ class Article(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('article_detail', args=[self.id])
 
 # 收藏夹类如下：
 class Favorite(models.Model):
