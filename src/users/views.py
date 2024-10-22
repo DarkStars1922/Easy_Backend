@@ -21,16 +21,16 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             if CustomUser.objects.filter(username=username):
-                return forms.ValidationError("当前用户名已被注册")
+                return HttpResponse("当前用户名已被注册")
             #检验两次输入密码是否一致
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
             if password1 != password2:
-                raise forms.ValidationError("两次密码输入不一致，请重试")
+                raise HttpResponse("两次密码输入不一致，请重试")
             # 保存用户数据并创建用户实例
             user = form.save()
             # 重定向到用户主页
-            login(requesr,user)
+            login(request,user)
             response =  redirect('user_home')
             response.set_cookie('username',username,300)
             return response
@@ -63,7 +63,7 @@ def user_login(request):
             return response
         except:
             #对于失败的查询，给出警告信息
-            return forms.ValidationError('用户名或密码错误')
+            return HttpResponse('用户名或密码错误')
     else:
         form = LoginForm()
     return render(request,'login.html',{'form':form})
