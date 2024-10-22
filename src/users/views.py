@@ -6,9 +6,9 @@ from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
 from django.core.mail import send_mail
 from comments.models import Comment
+from django.db.models import Q
 
 # 用户注册
 def register(request):
@@ -21,15 +21,16 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             if CustomUser.objects.filter(username=username):
-                return HttpResponse("当前用户名已被注册")
+                return forms.ValidationError("当前用户名已被注册")
             #检验两次输入密码是否一致
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
             if password1 != password2:
-                raise HttpResponse("两次密码输入不一致，请重试")
+                raise forms.ValidationError("两次密码输入不一致，请重试")
             # 保存用户数据并创建用户实例
             user = form.save()
-            # 重定向到用户主页，其中'user_home'对应urls.py中的path('home/', views.user_home, name='user_home'),可以根据需要修改重定向的 URL
+            # 重定向到用户主页
+            login(requesr,user)
             response =  redirect('user_home')
             response.set_cookie('username',username,300)
             return response
@@ -56,23 +57,23 @@ def user_login(request):
             #查找是否存在符合的用户
             user = authenticate(username=username,password=password)
             #登录已存在的用户
+            login(request,user)
             response =  redirect('user_home')
             response.set_cookie('username',username,300)
-            login(request,user)
             return response
         except:
             #对于失败的查询，给出警告信息
-            return HttpResponse('用户名或密码错误')
+            return forms.ValidationError('用户名或密码错误')
     else:
         form = LoginForm()
     return render(request,'login.html',{'form':form})
 
 # 用户登出
 def user_logout(request):
+    logout(request)
     #清除当前Cookie，达到登出效果
     response = redirect('login')
     response.delete_cookie('username')
-    logout(request)
     return response
 
 # 注销账户
@@ -179,8 +180,8 @@ def article_list(request):
     search = request.GET.get('search')
     if search:
         article_list = Article.objects.filter(
-            Q(title__icontains=search)|
-            Q(content__icontains=search)
+            Q(title_icontains=search)|
+            Q(content_icontains=search)
         )
     else:
         search = ''
