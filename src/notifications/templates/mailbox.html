@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信箱</title>
+</head>
+<body>
+    <h1>我的信箱</h1>
+    <a href='/users/home/'>返回主页</a>
+    <br>
+    <hr>
+    {% csrf_token %}
+        {%for notification in notifications%}
+            <p><div style = "font-size:larger"><strong>{{notification.sender.username}}</strong></div>{{notification.content}}<div style = "font-size:larger"><strong>{{notification.article.title}}</strong></div></p>
+            <br>
+            <p style = "font-size = small">{{notification.created_at}}</p>
+            <br>
+            <form   action="{% url 'notifications:read' notification.id %}"
+                    method="post"
+            >
+                {% csrf_token %}
+                {% if notification.read %}
+                    <button type="submit" disabled>已读</button>  
+                {% else %}
+                    <button type="submit">未读</button> 
+                {% endif %}
+            </form>
+            <hr> 
+            {% empty %}
+            <p style = "font-size:larger"><strong>暂无消息</strong></p>
+        {% endfor %}
+    <hr>
+</body>
+</html>

@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ArticleCreateForm
-from .models import CustomUser, Article, Favorite
+from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from comments.models import Comment
-from django.db.models import Q
+from notifications.models import Notification
+from .forms import RegisterForm, LoginForm, ArticleCreateForm
+from .models import CustomUser, Article, Favorite
+
+
 
 # 用户注册
 def register(request):
@@ -149,10 +152,12 @@ def user_home(request):
     # 获取用户文章和收藏夹
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
+    not_read_notifications = Notification.objects.filter(receiver=user,read=False)
     return render(request, 'user_home.html', {
         'user': user,
         'articles': articles,
-        'favorite_articles': favorite_articles 
+        'favorite_articles': favorite_articles ,
+        'not_read_notifications':not_read_notifications
     })
 
 # 收藏文章
@@ -180,8 +185,8 @@ def article_list(request):
     search = request.GET.get('search')
     if search:
         article_list = Article.objects.filter(
-            Q(title_icontains=search)|
-            Q(content_icontains=search)
+            Q(title__icontains=search)|
+            Q(content__icontains=search)
         )
     else:
         search = ''
@@ -221,5 +226,5 @@ def article_detail(request, article_id):
     return render(request, 'article_detail.html', {
         'article': article ,
         'is_favorited': is_favorited ,
-        'comments': comments
+        'comments': comments ,
     })

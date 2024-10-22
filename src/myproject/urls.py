@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),  # 包含用户应用的URL
-    path('comments/',include('comments.urls'))
+    path('comments/',include('comments.urls')),
+    path('notifications/',include('notifications.urls')),
 ]
