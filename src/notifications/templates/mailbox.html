@@ -11,14 +11,15 @@
     <hr>
     {% csrf_token %}
         {%for notification in notifications%}
-            <p><div style = "font-size:larger"><strong>{{notification.sender.username}}</strong></div>{{notification.content}}<div style = "font-size:larger"><strong>{{notification.article.title}}</strong></div></p>
+            <p><div style = "font-size:larger"><strong>{{notification.sender.username}}</strong></div>{{notification.content}}<strong>{{notification.article.title}}</strong></p>
+            <p style = "font-size:25px;color:purple">{{notification.comment}}</p>
             <br>
             <p style = "font-size = small">{{notification.created_at}}</p>
             <br>
             <form   action="{% url 'notifications:read' notification.id %}"
                     method="post"
             >
-                {% csrf_token %}
+            {% csrf_token %}
                 {% if notification.read %}
                     <button type="submit" disabled>已读</button>  
                 {% else %}

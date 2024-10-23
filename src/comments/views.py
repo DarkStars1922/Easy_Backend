@@ -16,7 +16,7 @@ def post_comment(request,article_id):
             comment.user = request.user
             comment.save()
             if request.user != article.author:
-                post_notification(request,article_id)
+                post_notification(request,article_id,comment.id)
             return redirect(article)
         else:
             return HttpResponse("评论内容有误，清重新填写")
