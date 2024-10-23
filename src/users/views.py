@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from comments.models import Comment
 from notifications.models import Notification
+from likes.models import Like
 from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite,Blacklist
 
@@ -172,6 +173,8 @@ def favorite_article(request, article_id):
             user = user,
             article = article
         )
+        article.favorite_count = 1
+        article.save()
         favorite.save()
         # 返回收藏结果
         is_favorited = True
@@ -180,30 +183,20 @@ def favorite_article(request, article_id):
         'is_favorited': is_favorited
     })
     
+# 创建黑名单
 @login_required
-def create_blacklist(request,comment_id,article_id):
-    article = get_object_or_404(Article,id=article_id)
-    comments = Comment.objects.filter(article=article)
+def create_blacklist(request,comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    article = comment.article
     if request.method == "POST":
         user = request.user
-        comment = get_object_or_404(Comment,id=comment_id)
-        blocker = comment.sender
+        blocker = comment.user
         blacklist = Blacklist.objects.create(
             user =user,
             blocker = blocker
         )
         blacklist.save()
-        is_favorited = False
-        comment_permission = True
-        if Favorite.objects.filter(user=user,article=article):
-            is_favorited = True
-        # 传递对象并渲染页面
-        return render(request, 'article_detail.html', {
-            'article': article ,
-            'is_favorited': is_favorited ,
-            'comments': comments ,
-            'comment_permission':comment_permission
-    })
+        return  redirect(article)
             
             
 
@@ -244,18 +237,24 @@ def article_detail(request, article_id):
     # 取出相应文章
     is_favorited = False
     comment_permission = True
+    is_liked = False
     user = request.user
     article = get_object_or_404(Article,id = article_id)
     comments = Comment.objects.filter(article=article)
+    blacklists = Blacklist.objects.filter(user=user)
     # 判断是否已被当前用户收藏
     if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
     if Blacklist.objects.filter(blocker=user,user=article.author):
         comment_permission = False
+    if Like.objects.filter(user=user,article=article):
+        is_liked=True
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
         'article': article ,
         'is_favorited': is_favorited ,
         'comments': comments ,
-        'comment_permission':comment_permission
+        'comment_permission':comment_permission,
+        'blacklists':blacklists,
+        'is_liked':is_liked
     })

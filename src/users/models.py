@@ -27,6 +27,8 @@ class Article(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    favorite_count = models.PositiveIntegerField(default=0)
+    like_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ('-created_at',)

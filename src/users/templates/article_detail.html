@@ -19,6 +19,19 @@
         {% endif %}
     </form>
 
+    <!--点赞功能-->
+        {%if is_liked%}
+            <form action="{% url 'likes:unlike' article.id %}" method="POST">
+            {%csrf_token%}
+            <button type="submit">取消点赞</button>
+            </form>
+        {%else%}
+            <form action="{% url 'likes:like' article.id %}" method="POST">
+            {%csrf_token%}
+            <button onclick="likes:like(article)">点赞好文</button>
+            </form>
+        {%endif%}
+
      <!-- 发表评论 -->
      <hr>
      {% if user.is_authenticated %}
@@ -59,16 +72,12 @@
              <p><code style="font-size:larger;color:purple">{{ comment.user }}</code>在{{comment.created_at}}时发表：</p>
              <p style="font-size:20px">{{ comment.content }}</p>
              <form 
-                action="{% url 'create_blacklist' %}" 
+                action="{% url 'create_blacklist' comment.id %}" 
                 method="POST"
                 >
             {% csrf_token %}
             {%if user != comment.user%}
-                {% if comment_permission %}
-                    <button type="submit">拉黑</button>  
-                {% else %}
-                    <button type="submit" disabled>已拉黑</button>  
-                {%endif%}
+                    <button type="submit">拉黑该用户</button>  
             {% endif %}
             </form>
          {% endfor %}

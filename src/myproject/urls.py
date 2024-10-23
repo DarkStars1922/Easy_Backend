@@ -22,4 +22,5 @@ urlpatterns = [
     path('users/', include('users.urls')),  # 包含用户应用的URL
     path('comments/',include('comments.urls')),
     path('notifications/',include('notifications.urls')),
+    path('likes/',include('likes.urls')),
 ]
