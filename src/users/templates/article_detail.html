@@ -22,27 +22,31 @@
      <!-- 发表评论 -->
      <hr>
      {% if user.is_authenticated %}
-         <div>
-             <form 
-                 action="{% url 'comments:post_comment' article.id %}" 
-                 method="POST"
-             >
-             {% csrf_token %}
-                 <div class="form-group">
-                     <label for="content">
-                             评论：
-                     </label>
-                     <textarea 
-                         type="text" 
-                         class="form-control" 
-                         id="content" 
-                         name="content" 
-                         rows="4"></textarea>
-                 </div>
-                 <button type="submit">发送</button>                    
-             </form>
-         </div>
-         <br>
+        {%if comment_permission%}
+            <div>
+                <form 
+                   action="{% url 'comments:post_comment' article.id %}" 
+                    method="POST"
+                 >
+                {% csrf_token %}
+                     <div class="form-group">
+                         <label for="content">
+                              评论：
+                      </label>
+                         <textarea 
+                            type="text" 
+                            class="form-control" 
+                             id="content" 
+                             name="content" 
+                            rows="4"></textarea>
+                    </div>
+                    <button type="submit">发送</button>                    
+                </form>
+             </div>
+        {%else%}
+             <p style='font-size:30px;color:red'><em>你无权评论该文章</em></p>
+        {%endif%}
+        <br>
      {% endif %}
      
  
@@ -54,6 +58,19 @@
              <hr>
              <p><code style="font-size:larger;color:purple">{{ comment.user }}</code>在{{comment.created_at}}时发表：</p>
              <p style="font-size:20px">{{ comment.content }}</p>
+             <form 
+                action="{% url 'create_blacklist' %}" 
+                method="POST"
+                >
+            {% csrf_token %}
+            {%if user != comment.user%}
+                {% if comment_permission %}
+                    <button type="submit">拉黑</button>  
+                {% else %}
+                    <button type="submit" disabled>已拉黑</button>  
+                {%endif%}
+            {% endif %}
+            </form>
          {% endfor %}
      </div>
  </div>

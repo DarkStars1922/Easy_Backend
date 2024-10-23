@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from comments.models import Comment
 from notifications.models import Notification
 from .forms import RegisterForm, LoginForm, ArticleCreateForm
-from .models import CustomUser, Article, Favorite
+from .models import CustomUser, Article, Favorite,Blacklist
 
 
 
@@ -179,6 +179,33 @@ def favorite_article(request, article_id):
         'article': article ,
         'is_favorited': is_favorited
     })
+    
+@login_required
+def create_blacklist(request,comment_id,article_id):
+    article = get_object_or_404(Article,id=article_id)
+    comments = Comment.objects.filter(article=article)
+    if request.method == "POST":
+        user = request.user
+        comment = get_object_or_404(Comment,id=comment_id)
+        blocker = comment.sender
+        blacklist = Blacklist.objects.create(
+            user =user,
+            blocker = blocker
+        )
+        blacklist.save()
+        is_favorited = False
+        comment_permission = True
+        if Favorite.objects.filter(user=user,article=article):
+            is_favorited = True
+        # 传递对象并渲染页面
+        return render(request, 'article_detail.html', {
+            'article': article ,
+            'is_favorited': is_favorited ,
+            'comments': comments ,
+            'comment_permission':comment_permission
+    })
+            
+            
 
 # 文章列表视图
 def article_list(request):
@@ -216,15 +243,19 @@ def article_detail(request, article_id):
         favorite_article(request,article_id)
     # 取出相应文章
     is_favorited = False
+    comment_permission = True
     user = request.user
     article = get_object_or_404(Article,id = article_id)
     comments = Comment.objects.filter(article=article)
     # 判断是否已被当前用户收藏
     if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
+    if Blacklist.objects.filter(blocker=user,user=article.author):
+        comment_permission = False
     # 传递对象并渲染页面
     return render(request, 'article_detail.html', {
         'article': article ,
         'is_favorited': is_favorited ,
         'comments': comments ,
+        'comment_permission':comment_permission
     })

@@ -13,4 +13,5 @@ urlpatterns = [
     path('article/<int:article_id>/favorite/', views.favorite_article, name='favorite_article'),
     path('articles/', views.article_list, name='article_list'),
     path('articles/<int:article_id>/', views.article_detail, name='article_detail'),
+    path('blacklists/create/',views.create_blacklist,name='create_blacklist'),
 ]

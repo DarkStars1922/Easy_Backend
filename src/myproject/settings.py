@@ -127,3 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 设置指向
 AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_URL = '/users/login/'
