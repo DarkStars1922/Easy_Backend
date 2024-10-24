@@ -17,5 +17,5 @@ class LoginForm(forms.Form):
 class ArticleCreateForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title','content']
+        fields = ['title','content','tags']
         

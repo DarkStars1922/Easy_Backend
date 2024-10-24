@@ -105,6 +105,7 @@ def create_article(request):
             article = article_form.save(commit=False)
             article.author = request.user
             article.save()
+            article_form.save_m2m()
             return redirect('user_home')
     return render(request, 'create_article.html')
  
@@ -168,16 +169,23 @@ def favorite_article(request, article_id):
         # 获取收藏用户和文章
         user = request.user
         article = get_object_or_404(Article,id=article_id)
-        # 创造收藏对象
-        favorite = Favorite.objects.create(
-            user = user,
-            article = article
-        )
-        article.favorite_count = 1
-        article.save()
-        favorite.save()
-        # 返回收藏结果
-        is_favorited = True
+        favorite = Favorite.objects.filter(user=user,article=article)
+        if not favorite:
+            # 创造收藏对象
+            favorite = Favorite.objects.create(
+               user = user,
+                article = article
+            )
+            article.favorite_count += 1
+            article.save()
+            favorite.save()
+            # 返回收藏结果
+            is_favorited = True
+        else:
+            article.favorite_count -= 1
+            article.save()
+            favorite.delete()
+            is_favorited = False
     return render(request,'article_detail.html',{
         'article': article ,
         'is_favorited': is_favorited
@@ -203,15 +211,22 @@ def create_blacklist(request,comment_id):
 # 文章列表视图
 def article_list(request):
     search = request.GET.get('search')
+    tag = request.GET.get('tag')
+    
+    # 取出所有文章
+    article_list = Article.objects.all()
+    
     if search:
-        article_list = Article.objects.filter(
+        article_list = article_list.filter(
             Q(title__icontains=search)|
             Q(content__icontains=search)
         )
     else:
         search = ''
-        # 取出所有文章
-        article_list = Article.objects.all()
+        
+    if tag and tag !='None':
+        article_list = article_list.filter(tags__name__in=[tag])
+    
     # 进行分页操作
     paginator = Paginator(article_list,4)
     # 提取每一页
@@ -222,7 +237,7 @@ def article_list(request):
     except:
         #若初始为空，主动跳转到第一页
         page_obj = paginator.get_page(1)
-    return render(request, 'article_list.html', {'page_obj': page_obj,'search':search})
+    return render(request, 'article_list.html', {'page_obj': page_obj,'search':search,'tag':tag})
 
 # 文章详情视图
 def article_detail(request, article_id):

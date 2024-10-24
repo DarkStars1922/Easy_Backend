@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User,AbstractUser
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 # models中保存的是“类”，换言之这是一个对类型的定义
 
@@ -25,10 +26,11 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    tags = TaggableManager(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    favorite_count = models.PositiveIntegerField(default=0)
-    like_count = models.PositiveIntegerField(default=0)
+    favorite_count = models.IntegerField(default=0)
+    like_count = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('-created_at',)

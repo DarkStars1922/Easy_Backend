@@ -13,7 +13,7 @@
     <form method="post">
         {% csrf_token %}
         {% if is_favorited %}
-            <button type="submit" disabled>已收藏</button>  <!-- 如果已收藏，按钮不可点击 -->
+            <button type="submit">取消收藏</button>  <!-- 如果已收藏，按钮变为取消收藏 -->
         {% else %}
             <button type="submit">收藏</button>  <!-- 未收藏时显示收藏按钮 -->
         {% endif %}

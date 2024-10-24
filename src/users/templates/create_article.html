@@ -10,6 +10,9 @@
         {% csrf_token %}
         <label for="title">文章标题:</label><br>
         <input type="text" id="title" name="title" required><br><br>
+
+        <label for="tags">文章标签:</label><br>
+        <input type="text" id="tags" name="tags" class="form-control"><br><br>
         
         <label for="content">文章内容:</label><br>
         <textarea id="content" name="content" rows="10" cols="50" required></textarea><br><br>
