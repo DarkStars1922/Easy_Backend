@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User,AbstractUser
 from django.urls import reverse
+from django.core.files.storage import default_storage
 from taggit.managers import TaggableManager
 
 # models中保存的是“类”，换言之这是一个对类型的定义
@@ -20,6 +21,13 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def delete_avatar(self):
+        if self.avatar:
+            default_storage.delete(self.avatar.path)
+            self.avatar = None
+            self.save()
+        
 
 # 文章类如下：
 class Article(models.Model):
@@ -31,9 +39,10 @@ class Article(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     favorite_count = models.IntegerField(default=0)
     like_count = models.IntegerField(default=0)
+    picture = models.ImageField(upload_to='article_picture/',null=True,blank=True)
 
     class Meta:
-        ordering = ('-created_at',)
+        ordering = ('-created_at','-updated_at',)
     
     def __str__(self):
         return self.title

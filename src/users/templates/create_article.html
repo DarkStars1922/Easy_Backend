@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>创建文章</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label for="title">文章标题:</label><br>
         <input type="text" id="title" name="title" required><br><br>
@@ -16,6 +16,9 @@
         
         <label for="content">文章内容:</label><br>
         <textarea id="content" name="content" rows="10" cols="50" required></textarea><br><br>
+
+        <label for='picture'>文章插图:</label><br>
+        <input type='file' id='picture' name='picture'>
 
         <button type="submit">提交</button>
     </form>

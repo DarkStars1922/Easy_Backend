@@ -7,8 +7,7 @@ CustomUser = get_user_model()
 class RegisterForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ['username','password1','password2','bio']
-        # fields = ['username', 'password1', 'password2', 'avatar', 'bio']
+        fields = ['username', 'password1', 'password2', 'avatar', 'bio']
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
@@ -17,5 +16,5 @@ class LoginForm(forms.Form):
 class ArticleCreateForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title','content','tags']
+        fields = ['title','content','tags','picture']
         

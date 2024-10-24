@@ -8,6 +8,12 @@
     <h1>我的信箱</h1>
     <a href='/users/home/'>返回主页</a>
     <br>
+    <br>
+    <form action="{% url 'notifications:clean_mailbox' %}" method = "POST">
+        {% csrf_token %}
+        <button type="submit">清空邮箱</button>
+    </form>
+    <br>
     <hr>
     {% csrf_token %}
         {%for notification in notifications%}
@@ -15,6 +21,7 @@
             <p style = "font-size:25px;color:purple">{{notification.comment}}</p>
             <br>
             <p style = "font-size = small">{{notification.created_at}}</p>
+            <a href="{% url 'notifications:delete_notification' notification.id %}">删除</a>
             <br>
             <form   action="{% url 'notifications:read' notification.id %}"
                     method="post"

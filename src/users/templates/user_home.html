@@ -8,7 +8,23 @@
     <h2>欢迎, {{ user.username }}</h2>
     <p>注册时间: {{ user.date_joined }}</p>
     <p>个人简介: {{ user.bio }}</p>
-    
+    {%if user.avatar %}
+        <div>头像:</div>
+        <img src="{{user.avatar.url}}" style='max-height:15%;max-width:10%'>
+    {%else%}
+        <p>暂无头像</p>
+    {%endif%}
+    <br>
+    <br>
+    <form method ="POST" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div class="form-group">
+            <label for = "avatar">上传头像</label>
+            <input type='file' name="avatar"id='avatar'>
+            <button type='submit'>提交头像</button>
+        </div>
+    </form>
+
     <h3>我的文章</h3>
     <ul>
         {% for article in articles %}

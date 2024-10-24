@@ -23,3 +23,19 @@ def mark_as_read(request,notification_id):
     notification.read = True
     notification.save()
     return redirect('notifications:user_mailbox')    
+
+@login_required
+def delete_notification(request,notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    if request.method == 'POST':
+        notification.delete()
+        return  redirect('notifications:user_mailbox')
+    return render(request,'delete_notification.html')
+
+@login_required
+def clean_mailbox(request):
+    if request.method=="POST":
+        notifications = Notification.objects.filter(receiver=request.user)
+        for notification in notifications:
+            notification.delete()
+    return redirect("notifications:user_mailbox")

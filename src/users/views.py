@@ -19,8 +19,7 @@ def register(request):
     # 检查请求方法是否为 POST
     if request.method == 'POST':
         # 创建表单实例，传入 POST 数据和文件
-        form = RegisterForm(request.POST)
-        #form = RegisterForm(request.POST, request.FILES)
+        form = RegisterForm(request.POST, request.FILES)
         # 验证表单数据是否有效
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -98,7 +97,7 @@ def create_article(request):
     #检查请求方法
     if request.method == "POST":
         #传入文章表单相关数据
-        article_form = ArticleCreateForm(request.POST)
+        article_form = ArticleCreateForm(request.POST,request.FILES)
         #验证文章表单是否合法
         if article_form.is_valid():
             #保存数据，回到主页
@@ -151,7 +150,12 @@ def user_home(request):
         return redirect('login')
     # 获取用户
     user = request.user
-    # 获取用户文章和收藏夹
+    if request.method == "POST":
+        user.delete_avatar()
+        avatar = request.FILES.get('avatar')
+        user.avatar = avatar
+        user.save()
+     # 获取用户文章和收藏夹
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
     not_read_notifications = Notification.objects.filter(receiver=user,read=False)
@@ -211,6 +215,7 @@ def create_blacklist(request,comment_id):
 # 文章列表视图
 def article_list(request):
     search = request.GET.get('search')
+    search_tag = request.GET.get('search_tag')
     tag = request.GET.get('tag')
     
     # 取出所有文章
@@ -226,7 +231,11 @@ def article_list(request):
         
     if tag and tag !='None':
         article_list = article_list.filter(tags__name__in=[tag])
-    
+        
+    if search_tag and search_tag !='None':
+        article_list = article_list.filter(tags__name__icontains=search_tag)
+    else:
+        search_tag=''
     # 进行分页操作
     paginator = Paginator(article_list,4)
     # 提取每一页
@@ -237,7 +246,12 @@ def article_list(request):
     except:
         #若初始为空，主动跳转到第一页
         page_obj = paginator.get_page(1)
-    return render(request, 'article_list.html', {'page_obj': page_obj,'search':search,'tag':tag})
+    return render(request, 'article_list.html', {
+        'page_obj': page_obj,
+        'search':search,
+        'tag':tag,
+        'search_tag':search_tag,
+        })
 
 # 文章详情视图
 def article_detail(request, article_id):

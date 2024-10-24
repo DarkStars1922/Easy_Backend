@@ -6,27 +6,71 @@
 </head>
 <body>
     <h1>文章列表</h1>
-
-    <div class='row'>
-        <form class='form-inline'>
-            <label>搜索：</label>
-            <input type = 'text'
-                class = 'form-control'
-                name = 'search'
-                placeholder='在这里搜索...'
-                required
-            >
-        </form>
-    </div>
+    <form>
+        <div class='row'>
+            <p class='form-inline'>
+                <label>搜索：</label>
+                <input type = 'text'
+                    class = 'form-control'
+                    name = 'search'
+                    placeholder='在这里搜索...'
+                >
+            </p>
+        </div>
+        <div class="row">
+            <p class='form-inline'>
+                <label>标签搜索：</label>
+                <input type='text'
+                    class = 'form-control'
+                    name = 'search_tag'
+                    placeholder='标签查询...'
+                >
+            </p>
+        </div>
+        <button type='submit'>搜索</button>
+    </form>
 
     {% if search %}
         {% if page_obj %}
-            <h4>"{{ search }}"</span>的搜索结果如下：</h4>
+            <h4>
+                <span style='font-size:larger'>"{{ search }}"</span>
+                {%if search_tag%}
+                    和标签<span style='font-size:larger'>"{{ search_tag }}"</span>
+                {%endif%}
+                的搜索结果如下：
+            </h4>
             <hr>        
         {% else %}
-            <h4>暂无"{{ search }}"</span>相关的文章。</h4>
+            <h4>
+                <span style='font-size:larger'>暂无"{{ search }}"</span>
+                {%if search_tag %}
+                    和标签<span style='font-size:larger'>"{{ search_tag }}"</span>
+                {%endif%}
+                相关的文章。
+            </h4>
             <hr>
         {% endif %}
+    {%else%}
+        {%if search_tag %}
+            {% if page_obj %}
+                <h4>
+                    {%if search_tag %}
+                        标签<span style='font-size:larger'>"{{ search_tag }}"</span>
+                    {%endif%}
+                    的搜索结果如下：
+                </h4>
+                <hr>        
+            {% else %}
+                <h4>
+                    <span style='font-size:larger'>暂无</span>
+                    {%if search_tag %}
+                        标签<span style='font-size:larger'>"{{ search_tag }}"</span>
+                    {%endif%}
+                    相关的文章。
+                </h4>
+                <hr>
+            {% endif %}
+        {%endif%}
     {% endif %}
 
     <!-- 显示文章列表 -->
@@ -37,7 +81,7 @@
             <p>标签：
                 <span>
                     {%for tag in article.tags.all %}
-                    <a href="{%url 'article_list'%}?search={{search}}&tag={{tag}}">{{tag}}</a>
+                    <a href="{%url 'article_list'%}?tag={{tag}}">{{tag}}</a>
                     {%endfor%}
                 </span>
             </p>
@@ -53,15 +97,15 @@
     <div>
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1&search={{search}}&tag={{tag}}">&laquo; 第一页</a>
-                <a href="?page={{ page_obj.previous_page_number }}&search={{search}}&tag={{tag}}">上一页</a>
+                <a href="?page=1&search={{search}}&search_tag={{search_tag}}&tag={{tag}}">&laquo; 第一页</a>
+                <a href="?page={{ page_obj.previous_page_number }}&search={{search}}&search_tag={{search_tag}}&tag={{tag}}">上一页</a>
             {% endif %}
 
             <span>第 {{ page_obj.number }} 页，共 {{ page_obj.paginator.num_pages }} 页</span>
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}&search={{search}}&tag={{tag}}">下一页</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}&search={{search}}&tag={{tag}}">最后一页 &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}&search={{search}}&search_tag={{search_tag}}&tag={{tag}}">下一页</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&search={{search}}&search_tag={{search_tag}}&tag={{tag}}">最后一页 &raquo;</a>
             {% endif %}
         </span>
     </div>
