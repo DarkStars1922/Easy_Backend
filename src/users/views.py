@@ -40,13 +40,13 @@ def register(request):
     else:
         # 如果不是 POST 请求，则创建一个空的表单实例
         form = RegisterForm()
-    
     # 渲染注册页面，并传递表单上下文
     return render(request, 'register.html', {'form': form})
 
 
 # 用户登录
 def user_login(request):
+    message=''
     if request.method == 'POST':
         # 防止重复登录
         if request.COOKIES.get('username'):
@@ -66,10 +66,14 @@ def user_login(request):
             return response
         except:
             #对于失败的查询，给出警告信息
-            return HttpResponse('用户名或密码错误')
+            message='用户名或密码错误'
     else:
         form = LoginForm()
-    return render(request,'login.html',{'form':form})
+    return render(request,'login.html',{'form':form,'message':message})
+
+def email_login(request):
+    
+    return render()
 
 # 用户登出
 def user_logout(request):
@@ -120,9 +124,12 @@ def update_article(request, article_id):
         # 获取修改信息
         title = request.POST['title']
         content = request.POST['content']
+        picture = request.FILES['picture']
         # 进行修改
         article.title = title
         article.content = content
+        article.delete_picture()
+        article.picture = picture
         # 保存修改后文章
         article.save()
     else:
@@ -136,6 +143,7 @@ def delete_article(request, article_id):
     article = get_object_or_404(Article,id=article_id)
     if request.method == 'POST':
         # 删除文章
+        article.delete_picture()
         article.delete()
         # 返回主页
         return redirect('user_home')
@@ -159,10 +167,12 @@ def user_home(request):
     articles = Article.objects.filter(author=user)
     favorite_articles = Favorite.objects.filter(user=user) 
     not_read_notifications = Notification.objects.filter(receiver=user,read=False)
+    blacklists = Blacklist.objects.filter(user=user)
     return render(request, 'user_home.html', {
         'user': user,
         'articles': articles,
         'favorite_articles': favorite_articles ,
+        'blacklists':blacklists,
         'not_read_notifications':not_read_notifications
     })
 
@@ -270,7 +280,6 @@ def article_detail(request, article_id):
     user = request.user
     article = get_object_or_404(Article,id = article_id)
     comments = Comment.objects.filter(article=article)
-    blacklists = Blacklist.objects.filter(user=user)
     # 判断是否已被当前用户收藏
     if Favorite.objects.filter(user=user,article=article):
         is_favorited = True
@@ -284,6 +293,5 @@ def article_detail(request, article_id):
         'is_favorited': is_favorited ,
         'comments': comments ,
         'comment_permission':comment_permission,
-        'blacklists':blacklists,
         'is_liked':is_liked
     })

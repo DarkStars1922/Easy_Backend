@@ -49,6 +49,12 @@ class Article(models.Model):
     
     def get_absolute_url(self):
         return reverse('article_detail', args=[self.id])
+    
+    def delete_picture(self):
+        if self.picture:
+            default_storage.delete(self.picture.path)
+            self.picture = None
+            self.save()
 
 # 收藏夹类如下：
 class Favorite(models.Model):

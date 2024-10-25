@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taggit',
+    'captcha',
     'users',
     'comments',
     'notifications',
@@ -135,3 +136,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_URL = '/users/login/'
+
+EMAIL_HOST = "smtp.qq.com"
+
+EMAIL_PORT = 25
+
+EMAIL_HOST_USER = "the_red_omega@qq.com"
+
+EMAIL_HOST_PASSWORD = "laynkhceodkldfij"
+
+EMAIL_USE_TLS = False
+
+EMAIL_FROM = "DarkStars"
