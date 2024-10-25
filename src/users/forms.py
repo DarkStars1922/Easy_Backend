@@ -19,10 +19,6 @@ class ArticleCreateForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['title','content','tags','picture']
-
-class EmailLoginForm(forms.Form):
-    email = forms.CharField(widget=forms.EmailInput)
-    code = forms.CharField(max_length=8)
-        
+       
 
         

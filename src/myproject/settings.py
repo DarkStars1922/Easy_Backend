@@ -139,12 +139,14 @@ LOGIN_URL = '/users/login/'
 
 EMAIL_HOST = "smtp.qq.com"
 
-EMAIL_PORT = 25
+EMAIL_PORT = 465
 
 EMAIL_HOST_USER = "the_red_omega@qq.com"
 
-EMAIL_HOST_PASSWORD = "laynkhceodkldfij"
+EMAIL_HOST_PASSWORD = "gbwdubgqpodzejci"
 
 EMAIL_USE_TLS = False
 
-EMAIL_FROM = "DarkStars"
+EMAIL_USE_SSL = True
+
+EMAIL_FROM = "the_red_omega@qq.com"

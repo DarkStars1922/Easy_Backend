@@ -5,12 +5,12 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
 from comments.models import Comment
 from notifications.models import Notification
 from likes.models import Like
 from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite,Blacklist
+from .email_sender import send_code_email
 
 
 
@@ -72,8 +72,34 @@ def user_login(request):
     return render(request,'login.html',{'form':form,'message':message})
 
 def email_login(request):
-    
-    return render()
+    message = ''
+    button = "获取验证码"
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        code = request.POST.get('code',)
+        have_code = False
+        user = CustomUser.objects.filter(email=email)
+        if  not user:
+            message = "用户不存在"
+        else:
+            if not request.session.get('saved_code'):
+                button = "登录"
+                message = "验证码已发送"
+                have_code = True
+                saved_code = send_code_email(email)
+                request.session['saved_code'] = saved_code
+            elif code == request.session.get('saved_code'):
+                del request.session['saved_code']
+                user = CustomUser.objects.get(email=email)
+                login(request,user)
+                response =  redirect('user_home')
+                response.set_cookie('username',user.username,300)
+                return response
+            else:
+                message = "验证码错误，请重试"
+                have_code = False
+                del request.session['saved_code']
+    return render(request,'email_login.html',locals())
 
 # 用户登出
 def user_logout(request):

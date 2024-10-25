@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱登录</title>
+</head>
+<body>
+    <h2>邮箱登录</h2>
+        {%if message %}
+             <div style="color:red"><em>{{message}}</em></div>
+        {%endif%}
+        <form method="post">
+            {% csrf_token %}
+            <label for="email">用户邮箱:</label>
+            <input  type="text" id="email" name="email" required><br>
+            {%if have_code %}
+                <label for="code">验证码:</label>
+                <input type="text"id="code" name="code" class="form-control" required><br><br>
+            {% endif %}
+            <input type="submit" name="submit"value="{{button}}">
+        </form>
+   
+    <p>换个方式?<a href="{% url 'login' %}">帐密登录</a></p>
+    <p>还没有账号？<a href="{% url 'register' %}">注册</a></p>
+    <p><a href="{% url 'article_list' %}">看看文章</a></p>
+</body>
+</html>
