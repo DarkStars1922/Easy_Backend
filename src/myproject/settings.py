@@ -150,6 +150,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_URL = '/users/login/'
 
+LOGIN_REDIRECT_URL = '/'
+
 # 邮箱设置
 EMAIL_HOST = "smtp.qq.com"
 

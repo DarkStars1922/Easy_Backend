@@ -19,11 +19,11 @@
         </div>
         <div class="row">
             <p class='form-inline'>
-                <label>标签搜索：</label>
+                <label>标签查询：</label>
                 <input type='text'
                     class = 'form-control'
                     name = 'search_tag'
-                    placeholder='标签查询...'
+                    placeholder='查询相关标签...'
                 >
             </p>
         </div>
@@ -81,7 +81,7 @@
                 <p>标签：
                      <span>
                          {%for tag in article.tags.all %}
-                        <a href="{%url 'article_list'%}?tag={{tag}}">{{tag}}</a>
+                        <a href="{%url 'article_list'%}?search={{search}}&search_tag={{search_tag}}&tag={{tag}}">{{tag}}</a>
                         {%endfor%}
                     </span>
                 </p>
@@ -110,8 +110,14 @@
         </span>
     </div>
 
-    <br>
-    <a href="{% url 'create_article' %}">创建新文章</a><br>
-    <a href="{% url 'user_home' %}">返回主页</a>
+    {%if user.is_authenticated%}
+        <br>
+        <a href="{% url 'create_article' %}">创建新文章</a><br>
+        <a href="{% url 'user_home' %}">返回主页</a>
+    {%else%}
+        <br>
+        <p>还没有帐号?<a href="{% url 'register' %}">注册</a></p>
+        <p>想回主页看看?<a href="{% url 'login' %}">登录</a></p>
+    {%endif%}
 </body>
 </html>

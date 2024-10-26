@@ -254,8 +254,16 @@ def create_blacklist(request,comment_id):
         # 返回文章详情界面
         return  redirect(article)
             
-            
-
+# 移除黑名单            
+@login_required
+def delete_blacklist(request,blacklist_id):
+    if request.method == 'POST':
+        # 获取黑名单对象
+        blacklist = Blacklist.objects.get(id=blacklist_id)
+        # 删除黑名单
+        blacklist.delete()
+        # 返回主页
+        return redirect('user_home')
 
 # 用户主页 
 def user_home(request):

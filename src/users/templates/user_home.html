@@ -34,6 +34,8 @@
                 <a href="{% url 'update_article' article.id %}">修改</a>
                 <a href="{% url 'delete_article' article.id %}">删除</a>
             </li>
+        {% empty %}
+            <li>你还没有留下过一些文字。</li>
         {% endfor %}
     </ul>
     
@@ -48,6 +50,21 @@
         {% endfor %}
     </ul>
 
+    <h3>我的黑名单</h3>
+    <ul>
+        {% for blacklist in blacklists %}
+            <li>
+                于{{blacklist.created_at}}拉黑了<strong>{{blacklist.blocker}}</strong>
+                <form action="{% url 'delete_blacklist' blacklist.id %}" method = "POST">
+                    {% csrf_token %}
+                    <button type="submit">移出黑名单</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>你的黑名单是空的。</li>
+        {% endfor %}
+    </ul>
+
     <br>
     <h3><a href="{%url 'notifications:user_mailbox'%}">我的信箱</a></h3>
     {%if not_read_notifications.count%}
@@ -56,7 +73,7 @@
     <hr>
     <br>
     <a href="{% url 'create_article' %}">创建新文章</a><br>
-    <a href="{% url 'article_list' %}">看看别的文章</a>
+    <a href="{% url 'article_list' %}?page=1&search=&search_tag=&tag=None">看看别的文章</a>
     <a href="{% url 'logout' %}">登出</a>
     <a href="{% url 'delete_account' %}">注销</a>
 </body>
