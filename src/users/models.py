@@ -64,6 +64,7 @@ class Favorite(models.Model):
 class Blacklist(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='user')
     blocker = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='black_user')
+    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.user.username} 拉黑了 {self.blocker.username}" 

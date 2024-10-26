@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from users.views import article_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',article_list,name='homepage'), # 主页的URL
     path('users/', include('users.urls')),  # 包含用户应用的URL
     path('comments/',include('comments.urls')), # 包含评论应用的URL
     path('notifications/',include('notifications.urls')), # 包含通知应用的URL

@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect,reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -6,12 +7,15 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
+from pure_pagination import Paginator as P
 from comments.models import Comment
 from notifications.models import Notification
 from likes.models import Like
 from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite,Blacklist
 from .email_sender import send_code_email
+import collections
+collections.Iterable = collections.abc.Iterable
 
 
 
@@ -254,8 +258,16 @@ def create_blacklist(request,comment_id):
         # 返回文章详情界面
         return  redirect(article)
             
-            
-
+# 移除黑名单            
+@login_required
+def delete_blacklist(request,blacklist_id):
+    if request.method == 'POST':
+        # 获取黑名单对象
+        blacklist = Blacklist.objects.get(id=blacklist_id)
+        # 删除黑名单
+        blacklist.delete()
+        # 返回主页
+        return redirect('user_home')
 
 # 用户主页 
 def user_home(request):
@@ -266,6 +278,12 @@ def user_home(request):
         return redirect('login')
     # 获取用户
     user = request.user
+    try:
+        page = request.GET.get('page')
+    except:
+        page = 1
+    if not page:
+        page = 1
     # 监测用户是否修改头像
     if request.method == "POST":
         # 修改头像前删除原头像
@@ -277,15 +295,18 @@ def user_home(request):
         user.save()
     # 获取用户文章，收藏夹，未读邮件和黑名单
     articles = Article.objects.filter(author=user)
+    article_list = P(articles,4,request=request)
+    article_page = article_list.page(page)
     favorite_articles = Favorite.objects.filter(user=user) 
     not_read_notifications = Notification.objects.filter(receiver=user,read=False)
     blacklists = Blacklist.objects.filter(user=user)
     return render(request, 'user_home.html', {
         'user': user,
-        'articles': articles,
+        'article_page': article_page,
         'favorite_articles': favorite_articles ,
         'blacklists':blacklists,
-        'not_read_notifications':not_read_notifications
+        'not_read_notifications':not_read_notifications,
+        'articles':articles,
     })
 
 # 文章列表视图
@@ -312,8 +333,9 @@ def article_list(request):
     if tag and tag !='None':
         # 精确获取存在标签信息的文章
         article_list = article_list.filter(tags__name__in=[tag]).distinct()
-        
-    
+    else:
+        # 若不存在，则将标签信息设置为空
+        tag = None
     if search_tag and search_tag !='None':
         # 若标签搜索信息存在且不为空，则进行对标签名的模糊搜索
         article_list = article_list.filter(tags__name__icontains=search_tag).distinct()

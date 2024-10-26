@@ -59,6 +59,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 1,
+    'MARGIN_PAGES_DISPLAYED': 2,
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+    }
+
 ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [
@@ -149,6 +155,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_URL = '/users/login/'
+
+LOGIN_REDIRECT_URL = '/'
 
 # 邮箱设置
 EMAIL_HOST = "smtp.qq.com"

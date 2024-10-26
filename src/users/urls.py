@@ -19,4 +19,5 @@ urlpatterns = [
     path('articles/<int:article_id>/', views.article_detail, name='article_detail'),
     # 黑名单相关路径
     path('blacklists/create/<int:comment_id>/',views.create_blacklist,name='create_blacklist'),
+    path('blacklists/<int:blacklist_id>/delete/',views.delete_blacklist,name='delete_blacklist'),
 ]
