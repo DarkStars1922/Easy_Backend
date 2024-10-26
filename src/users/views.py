@@ -278,10 +278,12 @@ def user_home(request):
         return redirect('login')
     # 获取用户
     user = request.user
+    # 尝试获取当前文章页数
     try:
         page = request.GET.get('page')
     except:
         page = 1
+    # 如果不存在，设置为第一页
     if not page:
         page = 1
     # 监测用户是否修改头像
@@ -295,11 +297,12 @@ def user_home(request):
         user.save()
     # 获取用户文章，收藏夹，未读邮件和黑名单
     articles = Article.objects.filter(author=user)
-    article_list = P(articles,4,request=request)
-    article_page = article_list.page(page)
     favorite_articles = Favorite.objects.filter(user=user) 
     not_read_notifications = Notification.objects.filter(receiver=user,read=False)
     blacklists = Blacklist.objects.filter(user=user)
+    # 对用户文章进行分页处理
+    article_list = P(articles,4,request=request)
+    article_page = article_list.page(page)
     return render(request, 'user_home.html', {
         'user': user,
         'article_page': article_page,
