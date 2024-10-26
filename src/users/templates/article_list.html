@@ -113,7 +113,7 @@
     {%if user.is_authenticated%}
         <br>
         <a href="{% url 'create_article' %}">创建新文章</a><br>
-        <a href="{% url 'user_home' %}">返回主页</a>
+        <a href="{% url 'user_home' %}?page=1">返回主页</a>
     {%else%}
         <br>
         <p>还没有帐号?<a href="{% url 'register' %}">注册</a></p>

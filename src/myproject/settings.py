@@ -59,6 +59,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 1,
+    'MARGIN_PAGES_DISPLAYED': 2,
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+    }
+
 ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [

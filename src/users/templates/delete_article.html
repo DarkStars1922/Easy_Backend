@@ -10,6 +10,6 @@
         {% csrf_token %}
         <button type="submit">确认删除</button>
     </form>
-    <a href="{% url 'user_home' %}">取消</a>
+    <a href="{% url 'user_home' %}?page=1">取消</a>
 </body>
 </html>

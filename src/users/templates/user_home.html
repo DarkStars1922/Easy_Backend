@@ -27,7 +27,7 @@
 
     <h3>我的文章</h3>
     <ul>
-        {% for article in articles %}
+        {% for article in article_page.object_list %}
             <li>
                 <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a> - 创建于 {{ article.created_at }}
                 <div>收藏数：<strong>{{article.favorite_count}}</strong> 点赞数：<strong>{{article.like_count}}</strong></div>
@@ -38,6 +38,39 @@
             <li>你还没有留下过一些文字。</li>
         {% endfor %}
     </ul>
+    {%if articles %}
+        <div>
+            <span>第 {{ article_page.number }} 部分，共 {{ article_page.paginator.num_pages }} 部分</span>
+            <br>
+            <span class="pagination">
+                {% if article_page.has_previous %}
+                    <a href="?page=1" class="first">&laquo;第一部分</a>
+                    <a href="?{{ article_page.previous_page_number.querystring }}" class="prev">&lsaquo;上一部分</a>
+                {% else %}
+                    <span class="disabled first">&laquo;第一部分</span>
+                    <span class="disabled prev">&lsaquo;上一部分</span>
+                {% endif %}
+                {%for page in article_page.pages%}
+                    {%if page %}
+                        {%if page == article_page.number%}
+                            <span class="current page"><strong>{{page}}</strong></span>
+                        {%else%}
+                            <a href="?{{page.querystring}}" class='page'>{{page}}</a>
+                        {%endif%}
+                    {%else%}
+                        <a>...</a>
+                    {%endif%}
+                {%endfor%}
+                {% if article_page.has_next %}
+                    <a href="?{{ article_page.next_page_number.querystring }}" class="next">下一部分&rsaquo;</a>
+                    <a href="?page={{ article_page.paginator.num_pages }}" class="last">最后一部分&raquo;</a>
+                {% else %}
+                    <span class="disabled next">下一部分&rsaquo;</span>
+                    <span class="disabled last">最后一部分&raquo;</span>
+                {% endif %}
+            </span>
+        </div>
+    {%endif%}
     
     <h3>我的收藏夹</h3>
     <ul>
@@ -46,7 +79,7 @@
                 <a href="{% url 'article_detail' favorite.article.id %}">{{ favorite.article.title }}</a> - 收藏于 {{ favorite.added_at }}
             </li>
         {% empty %}
-            <li>你还没有收藏任何文章。</li>
+            <li>这些文章还没有合你口味的。</li>
         {% endfor %}
     </ul>
 
@@ -61,7 +94,7 @@
                 </form>
             </li>
         {% empty %}
-            <li>你的黑名单是空的。</li>
+            <li>你尚未让任何人保持缄默。</li>
         {% endfor %}
     </ul>
 
