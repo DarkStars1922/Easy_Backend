@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
 from comments.models import Comment
 from notifications.models import Notification
 from likes.models import Like
@@ -276,12 +277,19 @@ def article_list(request):
     paginator = Paginator(article_list,4)
     # 提取每一页
     page = request.GET.get('page')
-    try:
-        # 获取当前页面
-        page_obj = paginator.get_page(page)
-    except:
-        #若初始为空，主动跳转到第一页
-        page_obj = paginator.get_page(1)
+    page_key="{0}{1}{2}_page_{3}".format(search,search_tag,tag,page)
+    cache_page=cache.get(page_key)
+    if cache_page:
+        page_obj = cache_page
+    else:
+        try:
+            # 获取当前页面
+            page_obj = paginator.get_page(page)
+            cache.set(page_key,page_obj,60)
+        except:
+            #若初始为空，主动跳转到第一页
+            page_obj = paginator.get_page(1)
+            cache.set(page_key,page_obj,60)
     return render(request, 'article_list.html', {
         'page_obj': page_obj,
         'search':search,
