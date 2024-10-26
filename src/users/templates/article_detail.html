@@ -6,14 +6,9 @@
 </head>
 <body>
     <h1>{{ article.title }}</h1>
-    <p>作者: {{ article.author.username }} | 创建于: {{ article.created_at }}</p>
-    <p>{{ article.content }}</p>
-    {%if article.picture%}
-        <img src="{{article.picture.url}}" style='max-height:15%;max-width:10%'>
-    {%endif%}
-   
-    <!-- 收藏功能 -->
-    <form method="post">
+
+     <!-- 收藏功能 -->
+     <form method="post">
         {% csrf_token %}
         {% if is_favorited %}
             <button type="submit">取消收藏</button>  <!-- 如果已收藏，按钮变为取消收藏 -->
@@ -23,17 +18,27 @@
     </form>
 
     <!--点赞功能-->
-        {%if is_liked%}
-            <form action="{% url 'likes:unlike' article.id %}" method="POST">
+    {%if is_liked%}
+        <form action="{% url 'likes:unlike' article.id %}" method="POST">
             {%csrf_token%}
             <button type="submit">取消点赞</button>
-            </form>
-        {%else%}
-            <form action="{% url 'likes:like' article.id %}" method="POST">
+        </form>
+    {%else%}
+        <form action="{% url 'likes:like' article.id %}" method="POST">
             {%csrf_token%}
             <button onclick="likes:like(article)">点赞好文</button>
-            </form>
-        {%endif%}
+        </form>
+    {%endif%}
+    <p>作者: {{ article.author.username }} | 创建于: {{ article.created_at }}</p>
+    <p>{{ article.content }}</p>
+    {%if article.picture%}
+        <img src="{{article.picture.url}}" style='max-height:15%;max-width:10%'>
+    {%endif%}
+
+    <br>
+    <a href="{% url 'article_list' %}">返回文章列表</a>
+    <br>
+    <a href="{% url 'user_home' %}">返回主页</a>
 
      <!-- 发表评论 -->
      <hr>
@@ -71,25 +76,25 @@
      <h4>共有{{ comments.count }}条评论</h4>
      <div>
          {% for comment in comments %}
-             <hr>
-             <p><code style="font-size:larger;color:purple">{{ comment.user }}</code>在{{comment.created_at}}时发表：</p>
-             <p style="font-size:20px">{{ comment.content }}</p>
-             <form 
-                action="{% url 'create_blacklist' comment.id %}" 
-                method="POST"
-                >
-            {% csrf_token %}
-            {%if user != comment.user%}
+            <hr>
+            <p><code style="font-size:larger;color:purple">{{ comment.user }}</code>在{{comment.created_at}}时发表：</p>
+            <p style="font-size:20px">{{ comment.content }}</p>
+            <form action="{% url 'create_blacklist' comment.id %}" method="POST">
+                {% csrf_token %}
+                {%if user != comment.user%}
                     <button type="submit">拉黑该用户</button>  
-            {% endif %}
+                {% endif %}
+            </form>
+            <form action="{%url "comments:delete_comment" comment.id%}"method='POST'>
+                {% csrf_token %}
+                {%if user == comment.user%}
+                    <button type="submit">删除评论</button>  
+                {% endif %}
             </form>
          {% endfor %}
      </div>
  </div>
 
-    <br>
-    <a href="{% url 'article_list' %}">返回文章列表</a>
-    <br>
-    <a href="{% url 'user_home' %}">返回主页</a>
+   
 </body>
 </html>

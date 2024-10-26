@@ -103,10 +103,10 @@ def email_login(request):
 
 # 用户登出
 def user_logout(request):
-    logout(request)
     #清除当前Cookie，达到登出效果
     response = redirect('login')
     response.delete_cookie('username')
+    logout(request)
     return response
 
 # 注销账户
@@ -266,10 +266,10 @@ def article_list(request):
         search = ''
         
     if tag and tag !='None':
-        article_list = article_list.filter(tags__name__in=[tag])
+        article_list = article_list.filter(tags__name__in=[tag]).distinct()
         
     if search_tag and search_tag !='None':
-        article_list = article_list.filter(tags__name__icontains=search_tag)
+        article_list = article_list.filter(tags__name__icontains=search_tag).distinct()
     else:
         search_tag=''
     # 进行分页操作

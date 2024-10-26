@@ -15,7 +15,11 @@
         <textarea id="content" name="content" rows="10" cols="50" required>{{ article.content }}</textarea><br><br>
 
         <label for="picture">文章图片:</label><br>
-        <img src="{{article.picture.url}}" style='max-height:15%;max-width:10%'>
+        {%if article.picture %}
+            <img src="{{article.picture.url}}" style='max-height:15%;max-width:10%'>
+        {%else%}
+            <p>本文章暂无图片</p>
+        {%endif%}
         <input type ="file" id = "picture" name="picture" ><br><br>
 
         <button type="submit">保存修改</button>

@@ -74,25 +74,24 @@
     {% endif %}
 
     <!-- 显示文章列表 -->
-    <ul>
-        {% for article in page_obj.object_list %}
-        <li>
-            <h2><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h2>
-            <p>标签：
-                <span>
-                    {%for tag in article.tags.all %}
-                    <a href="{%url 'article_list'%}?tag={{tag}}">{{tag}}</a>
-                    {%endfor%}
-                </span>
-            </p>
-            <p>{{ article.content|truncatewords:20 }}</p> <!-- 仅显示前20个词 -->
-            <p>作者: {{ article.author.username }} | 创建于: {{ article.created_at }}</p>
-        </li>
-        {% empty %}
-        <li>目前没有文章。</li>
-        {% endfor %}
-    </ul>
-
+        <ul>
+            {% for article in page_obj.object_list %}
+            <li>
+                <h2><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h2>
+                <p>标签：
+                     <span>
+                         {%for tag in article.tags.all %}
+                        <a href="{%url 'article_list'%}?tag={{tag}}">{{tag}}</a>
+                        {%endfor%}
+                    </span>
+                </p>
+                <p>{{ article.content|truncatewords:20 }}</p> <!-- 仅显示前20个词 -->
+                <p>作者: {{ article.author.username }} | 创建于: {{ article.created_at }}</p>
+            </li>
+            {% empty %}
+            <li>目前没有文章。</li>
+            {% endfor %}
+        </ul>
     <!-- 分页导航 -->
     <div>
         <span class="step-links">

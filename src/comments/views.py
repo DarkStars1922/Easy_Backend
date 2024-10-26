@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from .models import Comment
 from users.models import Article
 from notifications.views import post_notification
 from .forms import CommentForm
@@ -20,3 +21,13 @@ def post_comment(request,article_id):
             return redirect(article)
         else:
             return HttpResponse("评论内容有误，清重新填写")
+        
+@login_required
+def delete_comment(request,comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+    article = comment.article
+    if request.method == 'POST':
+        comment.delete()  
+    return    redirect(article)
+    
+    
