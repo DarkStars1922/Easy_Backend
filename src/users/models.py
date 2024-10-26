@@ -5,15 +5,6 @@ from django.urls import reverse
 from django.core.files.storage import default_storage
 from taggit.managers import TaggableManager
 
-# models中保存的是“类”，换言之这是一个对类型的定义
-
-# 比如文章类，即对文章进行定义。具体而言，我们可以添加 “标题”、“内容”、“作者”等子项
-
-# 对于用户类，由于django已经内置了一个强大的用户模型，因此我们无需从零开始实现
-# 但内置功能一般无法满足我们的所有需求，此时我们有两个方案可以选择：
-# 1.使用OneToOneField扩展用户模型，即新建一个类并与默认类进行关联；
-# 2.创建一个继承AbstractUser的类，并在settings.py中进行修改，使得Django的默认认证系统指向我们创建的自定义模型
-# 本框架采取的是更容易理解的方案二
 # 用户类如下：
 class CustomUser(AbstractUser):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
@@ -22,6 +13,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
     
+    # 删除用户头像
     def delete_avatar(self):
         if self.avatar:
             default_storage.delete(self.avatar.path)
@@ -42,14 +34,17 @@ class Article(models.Model):
     picture = models.ImageField(upload_to='article_picture/',null=True,blank=True)
 
     class Meta:
+        # 按照创建和更新时间逆序排序
         ordering = ('-created_at','-updated_at',)
     
     def __str__(self):
         return self.title
     
+    # 返回当前文章详情页面
     def get_absolute_url(self):
         return reverse('article_detail', args=[self.id])
     
+    # 删除文章图片
     def delete_picture(self):
         if self.picture:
             default_storage.delete(self.picture.path)

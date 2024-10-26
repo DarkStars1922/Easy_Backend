@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 外部插件
     'taggit',
     'captcha',
+    # 内部应用
     'users',
     'comments',
     'notifications',
@@ -132,6 +134,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# 静态文件及内部图片基本地址
+
 STATIC_URL = 'static/'
 MEDIA_URL='/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
@@ -146,6 +150,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_URL = '/users/login/'
 
+# 邮箱设置
 EMAIL_HOST = "smtp.qq.com"
 
 EMAIL_PORT = 465

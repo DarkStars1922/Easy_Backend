@@ -22,10 +22,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),  # 包含用户应用的URL
-    path('comments/',include('comments.urls')),
-    path('notifications/',include('notifications.urls')),
-    path('likes/',include('likes.urls')),
-    path('capcha',include('captcha.urls'))
+    path('comments/',include('comments.urls')), # 包含评论应用的URL
+    path('notifications/',include('notifications.urls')), # 包含通知应用的URL
+    path('likes/',include('likes.urls')), # 包含点赞应用的URL
+    path('capcha',include('captcha.urls')) # 包含图形验证码应用的URL
 ]
 
+# 添加内部静态文件地址
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
