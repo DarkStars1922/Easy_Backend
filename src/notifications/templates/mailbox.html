@@ -5,6 +5,7 @@
     <title>用户信箱</title>
 </head>
 <body>
+    {% load  humanize %}
     <h1>我的信箱</h1>
     <a href='/users/home/'>返回主页</a>
     <br>
@@ -49,7 +50,7 @@
                 <p style = "font-size:25px;color:purple">{{notification.comment}}</p>
                 <br>
             {%endif%}
-            <p style = "font-size = small">{{notification.created_at}}</p>
+            <p style = "font-size = small">{{notification.created_at|naturaltime}}</p>
             <a href="{% url 'notifications:delete_notification' notification.id %}">删除</a>
             <br>
             <form   action="{% url 'notifications:read' notification.id %}"
