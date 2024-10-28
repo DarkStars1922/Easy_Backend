@@ -14,12 +14,41 @@
         <button type="submit">清空邮箱</button>
     </form>
     <br>
+    <a href="{% url 'notifications:user_mailbox'%}?tag=comment">评论相关</a>
+    <a href="{% url 'notifications:user_mailbox'%}?tag=favorite">收藏相关</a>
+    <a href="{% url 'notifications:user_mailbox'%}?tag=like">点赞相关</a>
     <hr>
     {% csrf_token %}
         {%for notification in notifications%}
-            <p><div style = "font-size:larger"><strong>{{notification.sender.username}}</strong></div>{{notification.content}}<strong>{{notification.article.title}}</strong></p>
-            <p style = "font-size:25px;color:purple">{{notification.comment}}</p>
-            <br>
+            {%if notification.tag == "like"%}
+                <p>
+                    <div style = "font-size:larger">
+                        <span style="color:blue">[{{notification.tag}}]</span>
+                        <strong>{{notification.sender.username}}</strong>
+                    </div>
+                    {{notification.content}}<strong>{{notification.article.title}}</strong>
+                </p>
+            {% elif  notification.tag == "favorite"%}
+                <p>
+                    <div style = "font-size:larger">
+                        <span style="color:red">[{{notification.tag}}]</span>
+                        <strong>{{notification.sender.username}}</strong>
+                    </div>
+                    {{notification.content}}<strong>{{notification.article.title}}</strong>
+                </p>
+            {%else%}
+                <p>
+                    <div style = "font-size:larger">
+                        <span style="color:green">[{{notification.tag}}]</span>
+                        <strong>{{notification.sender.username}}</strong>
+                    </div>
+                    {{notification.content}}<strong>{{notification.article.title}}</strong>
+                </p>
+            {%endif%}
+            {%if notification.comment%}
+                <p style = "font-size:25px;color:purple">{{notification.comment}}</p>
+                <br>
+            {%endif%}
             <p style = "font-size = small">{{notification.created_at}}</p>
             <a href="{% url 'notifications:delete_notification' notification.id %}">删除</a>
             <br>

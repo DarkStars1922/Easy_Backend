@@ -99,7 +99,7 @@
     </ul>
 
     <br>
-    <h3><a href="{%url 'notifications:user_mailbox'%}">我的信箱</a></h3>
+    <h3><a href="{%url 'notifications:user_mailbox'%}?tag=">我的信箱</a></h3>
     {%if not_read_notifications.count%}
         <p style='color:red;font-size:30px'>你有<strong>{{not_read_notifications.count}}</strong>条未读信息</p>
     {%endif%}

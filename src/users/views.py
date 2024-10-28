@@ -11,6 +11,7 @@ from pure_pagination import Paginator as P
 from comments.models import Comment
 from notifications.models import Notification
 from likes.models import Like
+from notifications.views import post_notification
 from .forms import RegisterForm, LoginForm, ArticleCreateForm
 from .models import CustomUser, Article, Favorite,Blacklist
 from .email_sender import send_code_email
@@ -223,6 +224,10 @@ def favorite_article(request, article_id):
             # 保存文章和收藏夹
             article.save()
             favorite.save()
+            if user != article.author:
+                request.session['favorite'] = favorite.id
+                post_notification(request)
+                del request.session['favorite']
             # 返回收藏结果
             is_favorited = True
         else:

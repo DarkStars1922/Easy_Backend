@@ -1,27 +1,46 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from users.models import Article
+from users.models import Favorite
 from comments.models import Comment
+from likes.models import Like
 from .models import Notification
 
 # 用户信箱
 @login_required
 def mailbox(request):
     # 获取当前用户相关所有通知
+    tag = request.GET.get('tag')
     notifications = Notification.objects.filter(receiver=request.user)
+    if tag:
+        notifications = notifications.filter(tag=tag)
     # 返回邮箱界面
-    return render(request,'mailbox.html',{'notifications':notifications})
+    return render(request,'mailbox.html',{'notifications':notifications,'tag':tag})
 
 # 发送通知
 @login_required
-def post_notification(request,article_id,comment_id):
+def post_notification(request):
     # 获取发送者，相关文章，评论，和接收者(文章作者)
+    comment_id = request.session.get("comment")
+    favorite_id = request.session.get("favorite")
+    like_id = request.session.get("like")
     sender = request.user
-    article = get_object_or_404(Article,id=article_id)
-    comment = get_object_or_404(Comment,id=comment_id)
-    receiver = article.author
     # 创建一条通知
-    Notification.objects.create(sender=sender,article=article,receiver=receiver,content="评价了你的",comment=comment)
+    if comment_id:
+        comment = get_object_or_404(Comment,id=comment_id) 
+        article = comment.article
+        receiver = article.author 
+        Notification.objects.create(sender=sender,article=article,receiver=receiver,content="评价了你的",comment=comment,tag='comment')
+    elif like_id:
+        like = get_object_or_404(Like,id=like_id) 
+        article = like.article
+        receiver = article.author 
+        Notification.objects.create(sender=sender,article=article,receiver=receiver,content="点赞了你的",like=like,tag='like')
+    elif favorite_id:
+        favorite = get_object_or_404(Favorite,id=favorite_id) 
+        article = favorite.article
+        receiver = article.author 
+        Notification.objects.create(sender=sender,article=article,receiver=receiver,content="收藏了你的",favorite=favorite,tag='favorite')
+        
     
 # 标记已读
 @login_required

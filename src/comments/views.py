@@ -6,7 +6,7 @@ from users.models import Article
 from notifications.views import post_notification
 from .forms import CommentForm
 
-# 发送邮件
+# 发送评论
 @login_required
 def post_comment(request,article_id):
     # 获取文章信息
@@ -24,7 +24,9 @@ def post_comment(request,article_id):
             comment.save()
             if request.user != article.author:
                 # 若评论者不是文章作者，则向作者发送通知
-                post_notification(request,article_id,comment.id)
+                request.session["comment"]=comment.id
+                post_notification(request)
+                del request.session['comment']
             # 返回文章详情页面
             return redirect(article)
         else:
