@@ -23,9 +23,10 @@ def post_comment(request,article_id):
             # 保存评论
             comment.save()
             if request.user != article.author:
-                # 若评论者不是文章作者，则向作者发送通知
+                # 若评论者不是文章作者，则向作者发送通知，将评论id写入session
                 request.session["comment"]=comment.id
                 post_notification(request)
+                # 删除session中评论相关内容
                 del request.session['comment']
             # 返回文章详情页面
             return redirect(article)

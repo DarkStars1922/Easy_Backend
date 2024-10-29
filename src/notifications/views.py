@@ -19,23 +19,27 @@ def mailbox(request):
 # 发送通知
 @login_required
 def post_notification(request):
-    # 获取发送者，相关文章，评论，和接收者(文章作者)
+    # 通过获取id，判断通知类型
     comment_id = request.session.get("comment")
     favorite_id = request.session.get("favorite")
     like_id = request.session.get("like")
+    # 获取通知相关发送对象
     sender = request.user
     # 创建一条通知
     if comment_id:
+        # 评论相关
         comment = get_object_or_404(Comment,id=comment_id) 
         article = comment.article
         receiver = article.author 
         Notification.objects.create(sender=sender,article=article,receiver=receiver,content="评价了你的",comment=comment,tag='comment')
     elif like_id:
+        # 点赞相关
         like = get_object_or_404(Like,id=like_id) 
         article = like.article
         receiver = article.author 
         Notification.objects.create(sender=sender,article=article,receiver=receiver,content="点赞了你的",like=like,tag='like')
     elif favorite_id:
+        # 收藏相关
         favorite = get_object_or_404(Favorite,id=favorite_id) 
         article = favorite.article
         receiver = article.author 

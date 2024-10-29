@@ -225,8 +225,11 @@ def favorite_article(request, article_id):
             article.save()
             favorite.save()
             if user != article.author:
+                # 若收藏者不为作者，将收藏夹id写入session
                 request.session['favorite'] = favorite.id
+                # 发送通知
                 post_notification(request)
+                # 删除收藏相关session，防止影响其他通知情况
                 del request.session['favorite']
             # 返回收藏结果
             is_favorited = True

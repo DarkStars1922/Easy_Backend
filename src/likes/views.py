@@ -14,8 +14,11 @@ def like(request,article_id):
     like = Like.objects.create(user=user,article=article)
     like.save()
     if user != article.author:
+        # 若收藏者不为作者，将点赞id写入session
         request.session['like'] = like.id
+        # 发送通知
         post_notification(request)
+        # 删除通知中点赞相关内容
         del request.session['like']
     # 增加文章点赞数并保存
     article.like_count += 1
