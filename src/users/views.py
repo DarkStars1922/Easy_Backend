@@ -309,7 +309,7 @@ def user_home(request):
     not_read_notifications = Notification.objects.filter(receiver=user,read=False)
     blacklists = Blacklist.objects.filter(user=user)
     # 对用户文章进行分页处理
-    article_list = P(articles,4,request=request)
+    article_list = P(articles,3,request=request)
     article_page = article_list.page(page)
     return render(request, 'user_home.html', {
         'user': user,
@@ -322,6 +322,9 @@ def user_home(request):
 
 # 文章列表视图
 def article_list(request):
+    # 若Cookie信息过期，清空session用户相关内容
+    if not request.COOKIES.get('username'):
+        logout(request)
     # 获取搜索信息
     search = request.GET.get('search')
     search_tag = request.GET.get('search_tag')

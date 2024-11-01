@@ -12,7 +12,7 @@
         <form method="post">
             {% csrf_token %}
             <label for="email">用户邮箱:</label>
-            <input  type="text" id="email" name="email" required><br>
+            <input  type="text" id="email" name="email" value="{{ email }}" required><br>
             {%if have_code %}
                 <label for="code">验证码:</label>
                 <input type="text"id="code" name="code" class="form-control" required><br><br>
@@ -25,3 +25,4 @@
     <p><a href="{% url 'article_list' %}?page=1&search=&search_tag=&tag=None">看看文章</a></p>
 </body>
 </html>
+ 
