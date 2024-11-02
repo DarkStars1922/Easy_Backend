@@ -50,12 +50,13 @@ def post_notification(request):
 @login_required
 def mark_as_read(request,notification_id):
     # 获取当前通知
+    tag = request.GET.get("tag")
     notification = Notification.objects.get(id=notification_id)
     # 设置已读取并保存通知阅读情况
     notification.read = True
     notification.save()
     # 回到信箱
-    return redirect('notifications:user_mailbox')    
+    return redirect('/notifications/mailbox/?tag={0}'.format(tag))    
 
 # 删除通知
 @login_required

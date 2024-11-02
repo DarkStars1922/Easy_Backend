@@ -53,7 +53,7 @@
             <p style = "font-size = small">{{notification.created_at|naturaltime}}</p>
             <a href="{% url 'notifications:delete_notification' notification.id %}">删除</a>
             <br>
-            <form   action="{% url 'notifications:read' notification.id %}"
+            <form   action="{% url 'notifications:read' notification.id %}?tag={{notification.tag}}"
                     method="post"
             >
             {% csrf_token %}
