@@ -34,7 +34,7 @@ def post_comment(request,article_id):
             # 评论有误则给出提醒
             return HttpResponse("评论内容有误，清重新填写")
         
-# 删除邮件
+# 删除评论
 @login_required
 def delete_comment(request,comment_id):
     # 获取评论信息
